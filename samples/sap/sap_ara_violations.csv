@@ -1,0 +1,11 @@
+UserID,UserName,RiskID,RiskDescription,RiskLevel,Function1,Function2,RuleSet,MitigatingControl,MitigationOwner,LastReviewDate,Status
+USR001,João Silva,FI001,AP Processing + Payment Release,High,F-43,F-53,FI-Standard,,, ,Open
+USR002,Maria Santos,FI001,AP Processing + Payment Release,High,F-43,F-53,FI-Standard,MC-FI-001,Carlos Mendes,2026-01-15,Mitigated
+USR003,Pedro Costa,MM001,PO Creation + GR Posting,High,ME21N,MIGO,MM-Standard,,,, Open
+USR004,Ana Oliveira,FI002,GL Posting + Period Close,Medium,FB50,OB52,FI-Standard,,,, Open
+USR005,Lucas Rocha,FI001,AP Processing + Payment Release,High,F-43,F-53,FI-Standard,MC-FI-001,Carlos Mendes,2026-02-01,Mitigated
+USR006,Fernanda Lima,HR001,Payroll Processing + Bank Transfer,Critical,PC00_M99_CALC,F-53,HR-Standard,,,,Open
+USR007,Roberto Nunes,MM001,PO Creation + GR Posting,High,ME21N,MIGO,MM-Standard,MC-MM-001,Paula Ferreira,2026-01-20,Mitigated
+USR008,Carla Dias,FI003,Asset Posting + Depreciation Run,Medium,ABZON,AFAB,FI-Standard,,,,Open
+USR009,Thiago Alves,FI001,AP Processing + Payment Release,High,F-43,F-53,FI-Standard,,,,Open
+USR010,Juliana Moura,SD001,Sales Order + Billing + Credit,High,VA01,VF01,SD-Standard,,,, Open

@@ -1,0 +1,13 @@
+control,metric,value,unit,cycle_id,cycle_date,source
+5.3,conflicts_total,10,count,2026-Q1,2026-03-31,sap-grc
+5.3,conflicts_critical,8,count,2026-Q1,2026-03-31,sap-grc
+5.3,conflicts_medium,2,count,2026-Q1,2026-03-31,sap-grc
+5.3,conflicts_low,0,count,2026-Q1,2026-03-31,sap-grc
+5.3,untreated_pct,70.0,percent,2026-Q1,2026-03-31,sap-grc
+5.15,access_via_group_pct,66.67,percent,2026-Q1,2026-03-31,sap-grc
+5.15,direct_access_pct,33.33,percent,2026-Q1,2026-03-31,sap-grc
+8.2,privileged_accounts,4,count,2026-Q1,2026-03-31,sap-grc
+8.2,inactive_accounts_pct,25.0,percent,2026-Q1,2026-03-31,sap-grc
+8.3,users_multiple_roles_pct,25.0,percent,2026-Q1,2026-03-31,sap-grc
+5.33,decisions_with_evidence_pct,60.0,percent,2026-Q1,2026-03-31,sap-grc
+8.2,critical_service_principals,2,count,2026-Q1,2026-03-31,sap-grc

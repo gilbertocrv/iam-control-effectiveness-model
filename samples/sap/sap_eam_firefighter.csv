@@ -1,0 +1,6 @@
+LogID,FirefighterID,FirefighterName,OwnerID,OwnerName,Reason,StartTime,EndTime,TransactionsUsed,Reviewed,ReviewDate,ReviewedBy,Justification
+FF-001,FF_FI_001,FF Finance 1,USR005,Lucas Rocha,Month-end closing emergency,2026-03-31 22:00,2026-03-31 23:45,"F-02,FB50,OB52",Yes,2026-04-01,Carlos Mendes,Approved - month-end procedure
+FF-002,FF_IT_001,FF IT Admin,USR009,Thiago Alves,System patch deployment,2026-03-15 01:00,2026-03-15 03:30,"SM59,SCC4,SE06",Yes,2026-03-16,Paula Ferreira,Approved - maintenance window
+FF-003,FF_FI_001,FF Finance 1,USR001,João Silva,Vendor master data correction,2026-02-20 14:00,2026-02-20 15:00,"FK01,FK02",No,,, Pending review
+FF-004,FF_MM_001,FF Procurement,USR003,Pedro Costa,Urgent PO correction,2026-01-10 09:00,2026-01-10 10:30,"ME22N,MIGO",Yes,2026-01-11,Roberto Nunes,Approved - supplier deadline
+FF-005,FF_FI_001,FF Finance 1,USR002,Maria Santos,Payment run reprocess,2026-03-25 16:00,2026-03-25 17:30,"F110,F-53",No,,,Pending review

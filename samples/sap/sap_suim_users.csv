@@ -1,0 +1,17 @@
+UserID,UserName,UserType,Department,ProfileType,ProfileName,AssignedDirectly,LastLogin,AccountStatus,LockedReason
+USR001,João Silva,Dialog,Finance,Role,Z_FI_AP_CLERK,No,2026-03-15,Active,
+USR001,João Silva,Dialog,Finance,Profile,SAP_ALL,Yes,2026-03-15,Active,DirectProfile
+USR002,Maria Santos,Dialog,Finance,Role,Z_FI_AP_CLERK,No,2026-03-10,Active,
+USR002,Maria Santos,Dialog,Finance,Role,Z_FI_PAYMENT,No,2026-03-10,Active,
+USR003,Pedro Costa,Dialog,Procurement,Role,Z_MM_BUYER,No,2026-02-01,Active,
+USR004,Ana Oliveira,Dialog,Finance,Role,Z_FI_GL_ACCOUNTANT,No,2025-11-20,Active,
+USR005,Lucas Rocha,Dialog,Finance,Role,Z_FI_PAYMENT,No,2026-03-18,Active,
+USR006,Fernanda Lima,Dialog,HR,Profile,SAP_NEW,Yes,2026-03-12,Active,DirectProfile
+USR007,Roberto Nunes,Dialog,Procurement,Role,Z_MM_BUYER,No,2026-03-05,Active,
+USR007,Roberto Nunes,Dialog,Procurement,Role,Z_MM_GR_POSTING,No,2026-03-05,Active,
+USR008,Carla Dias,Dialog,Finance,Role,Z_FI_ASSET,No,2025-10-15,Active,
+USR009,Thiago Alves,Service,IT,Profile,SAP_ALL,Yes,2026-01-30,Active,ServiceAccount
+USR010,Juliana Moura,Dialog,Sales,Role,Z_SD_SALES,No,2026-03-20,Active,
+USR010,Juliana Moura,Dialog,Sales,Role,Z_SD_BILLING,No,2026-03-20,Active,
+USR011,Admin_Batch,System,IT,Profile,SAP_ALL,Yes,2026-03-01,Active,SystemAccount
+USR012,Rodrigo Faria,Dialog,Finance,Role,Z_FI_AP_CLERK,No,2025-08-10,Inactive,NoLogin90d

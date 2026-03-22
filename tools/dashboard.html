@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAM Governance Dashboard | Métricas e Decisão</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#003366;--navy-mid:#004080;--navy-light:#0056b3;--accent:#c8922a;
+  --accent-light:#e8a83a;--bg:#f4f6f8;--white:#fff;--gray:#666;
+  --border:#d1d9e4;--text:#1a2340;--green:#1a7a4a;--green-light:#e8f5ee;
+  --amber:#a06400;--amber-light:#fff8ed;--red:#c0392b;--red-light:#fdf0ef;
+  --purple:#5b2d8e;--purple-light:#f5f0ff;
+  --mono:'IBM Plex Mono',monospace;--ui:'IBM Plex Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--ui);background:var(--bg);color:var(--text);line-height:1.6;font-size:14px;}
+
+.breadcrumb{background:var(--navy);padding:10px 30px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4)}
+.breadcrumb a{color:var(--accent-light);text-decoration:none}
+.breadcrumb span{margin:0 6px}
+
+header{background:var(--navy);padding:32px 30px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.header-left h1{font-size:18px;font-weight:700;color:#fff;font-family:var(--mono);}
+.header-left .sub{font-size:11px;color:rgba(255,255,255,.5);font-family:var(--mono);margin-top:3px;}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap;}
+
+.btn{font-family:var(--mono);font-size:11px;padding:7px 14px;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.8);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn:hover{border-color:var(--accent-light);color:var(--accent-light);}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--accent-light);border-color:var(--accent-light);}
+.btn-danger{border-color:rgba(192,57,43,.6);color:#e57373;}
+.btn-danger:hover{background:rgba(192,57,43,.15);}
+
+main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
+.section-label{font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
+
+/* IMPORT PANEL */
+.import-panel{background:var(--white);border:1px solid var(--border);border-radius:6px;margin-bottom:24px;overflow:hidden;}
+.import-panel-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.import-panel-header:hover{background:#fafbfc;}
+.import-panel-header h2{font-size:12px;font-family:var(--mono);color:var(--gray);font-weight:600;letter-spacing:2px;text-transform:uppercase;}
+.import-body{padding:20px;display:none;}
+.import-body.open{display:block;}
+.import-tabs{display:flex;gap:6px;margin-bottom:16px;}
+.import-tab{font-size:11px;font-family:var(--mono);padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--gray);cursor:pointer;}
+.import-tab.active{border-color:var(--navy-light);color:var(--navy-light);background:#f0f4fa;}
+.drop-zone{border:2px dashed var(--border);border-radius:6px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.drop-zone:hover,.drop-zone.over{border-color:var(--navy-light);background:#f0f4fa;}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.drop-label{font-size:12px;font-family:var(--mono);color:var(--gray);}
+.drop-label span{color:var(--navy-light);}
+.trace-log{background:#fafbfc;border:1px solid var(--border);border-radius:4px;padding:12px 16px;font-family:var(--mono);font-size:11px;color:var(--gray);max-height:140px;overflow-y:auto;margin-top:14px;}
+.te{padding:3px 0;border-bottom:1px solid var(--border);}
+.te:last-child{border-bottom:none;}
+.tok{color:var(--green);}.twarn{color:var(--amber);}.terr{color:var(--red);}.thash{color:var(--purple);}
+
+/* CYCLE BAR */
+.cycle-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;background:var(--white);border:1px solid var(--border);border-radius:6px;padding:12px 16px;flex-wrap:wrap;}
+.cycle-label{font-size:11px;font-family:var(--mono);color:var(--gray);white-space:nowrap;}
+.cycle-select{font-family:var(--mono);font-size:12px;background:#fff;border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:4px;cursor:pointer;}
+.btn-sm{font-family:var(--mono);font-size:11px;padding:5px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;color:var(--gray);cursor:pointer;}
+.btn-sm:hover{border-color:var(--navy-light);color:var(--navy-light);}
+.cycle-meta{font-size:10px;font-family:var(--mono);color:var(--gray);margin-left:auto;}
+
+/* OVERVIEW */
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:20px;}
+.ov-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px;}
+.ov-label{font-size:10px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.ov-value{font-size:24px;font-weight:700;color:var(--navy);line-height:1;font-family:var(--mono);}
+.ov-sub{font-size:10px;color:var(--gray);margin-top:5px;font-family:var(--mono);}
+.badge{display:inline-block;font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:3px;font-weight:600;}
+.b-critical{background:var(--red-light);color:var(--red);border:1px solid rgba(192,57,43,.3);}
+.b-alto{background:#fff3f3;color:var(--red);border:1px solid rgba(192,57,43,.2);}
+.b-medio{background:var(--amber-light);color:var(--amber);border:1px solid rgba(160,100,0,.2);}
+.b-baixo{background:var(--green-light);color:var(--green);border:1px solid rgba(26,122,74,.2);}
+
+/* SCORE */
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+@media(max-width:700px){.score-grid{grid-template-columns:1fr;}}
+.score-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:22px;}
+.score-card-label{font-size:10px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;}
+.score-big{font-size:52px;font-weight:700;font-family:var(--mono);line-height:1;}
+.score-denom{font-size:18px;color:var(--gray);font-family:var(--mono);}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.score-row:last-child{margin-bottom:0;}
+.score-row-name{font-size:11px;font-family:var(--mono);color:var(--gray);width:110px;flex-shrink:0;}
+.score-track{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;}
+.score-fill{height:100%;border-radius:3px;transition:width .8s ease;}
+.score-val{font-size:11px;font-family:var(--mono);font-weight:600;width:28px;text-align:right;flex-shrink:0;}
+.fill-green{background:var(--green);}.fill-amber{background:#e8a83a;}.fill-red{background:var(--red);}
+
+/* TREND */
+.trend-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:22px;margin-bottom:20px;}
+.trend-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.chart-wrap{position:relative;height:200px;}
+
+/* CONTROL CARDS */
+.controls-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:20px;}
+.ctrl-card{background:var(--white);border:1px solid var(--border);border-top:3px solid var(--navy);border-radius:6px;padding:20px;}
+.ctrl-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.ctrl-title{font-size:13px;font-weight:700;color:var(--navy);}
+.ctrl-refs{font-size:10px;font-family:var(--mono);color:var(--gray);margin-top:3px;}
+.ctrl-score{font-size:11px;font-family:var(--mono);font-weight:600;padding:3px 8px;border-radius:3px;}
+.metric-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px;font-family:var(--mono);}
+.metric-row:last-child{border-bottom:none;}
+.mr-label{color:var(--gray);}
+.mr-val{color:var(--text);font-weight:600;}
+.mr-warn{color:var(--amber);}.mr-bad{color:var(--red);}.mr-good{color:var(--green);}
+.src-panel{display:flex;flex-wrap:wrap;gap:5px;padding:8px 0 2px;border-top:1px solid var(--border);margin-top:10px;}
+.src-badge{display:inline-block;font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:3px;border:1px solid;}
+.src-sap{color:#0056b3;border-color:rgba(0,86,179,.25);background:#e8f2fc;}
+.src-sf{color:#006cb0;border-color:rgba(0,108,176,.25);background:#e8f4fb;}
+.src-totvs{color:var(--amber);border-color:rgba(160,100,0,.25);background:var(--amber-light);}
+.src-entra{color:var(--purple);border-color:rgba(91,45,142,.25);background:var(--purple-light);}
+.src-sample{color:var(--green);border-color:rgba(26,122,74,.25);background:var(--green-light);}
+.src-manual{color:var(--gray);border-color:var(--border);background:#f8f8f8;}
+
+/* RISK PANEL */
+.risk-panel{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:22px;margin-bottom:20px;}
+.risk-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.risk-summary-bar{display:flex;gap:10px;flex-wrap:wrap;padding:14px 16px;background:var(--bg);border-radius:6px;margin-bottom:16px;border:1px solid var(--border);}
+.risk-stat{display:flex;flex-direction:column;align-items:center;min-width:60px;}
+.risk-stat-val{font-size:20px;font-weight:700;font-family:var(--mono);line-height:1;}
+.risk-stat-label{font-size:9px;font-family:var(--mono);color:var(--gray);margin-top:3px;text-align:center;}
+.risk-sep{width:1px;background:var(--border);align-self:stretch;margin:0 4px;}
+.filter-bar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.filter-label{font-size:10px;font-family:var(--mono);color:var(--gray);}
+
+.finding-card{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:8px;transition:border-color .15s;}
+.finding-card:hover{border-color:#c8d4e0;}
+.finding-card.has-lgpd{border-left:3px solid rgba(91,45,142,.5);}
+.finding-card.confirmed{border-left:3px solid rgba(26,122,74,.5);}
+.finding-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.finding-ctrl{font-size:10px;font-family:var(--mono);color:var(--gray);background:var(--white);padding:2px 7px;border-radius:3px;border:1px solid var(--border);}
+.finding-metric{font-size:12px;font-weight:600;color:var(--navy);flex:1;}
+.finding-value{font-size:12px;font-family:var(--mono);font-weight:700;color:var(--text);}
+.finding-badges{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:8px;}
+.finding-lgpd-box{background:var(--purple-light);border:1px solid rgba(91,45,142,.2);border-radius:4px;padding:8px 12px;margin-bottom:8px;}
+.finding-lgpd-label{font-size:9px;font-family:var(--mono);color:var(--purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.finding-lgpd-text{font-size:11px;color:var(--purple);}
+.finding-lgpd-art{font-size:10px;font-family:var(--mono);color:rgba(91,45,142,.7);margin-top:2px;}
+.finding-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.finding-select{font-size:10px;font-family:var(--mono);background:#fff;border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;cursor:pointer;}
+.finding-note{font-size:10px;font-family:var(--mono);background:#fff;border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;flex:1;min-width:140px;}
+.finding-confirm{font-size:10px;font-family:var(--mono);padding:5px 10px;border-radius:4px;border:1px solid var(--border);background:#fff;color:var(--gray);cursor:pointer;white-space:nowrap;}
+.finding-confirm:hover{border-color:var(--green);color:var(--green);}
+
+/* DECISION BADGES */
+.d-remediate{background:#fdf0ef;color:var(--red);border:1px solid rgba(192,57,43,.3);}
+.d-escalate{background:#fdf0ef;color:#8b0000;border:1px solid rgba(139,0,0,.3);}
+.d-mitigate{background:var(--amber-light);color:var(--amber);border:1px solid rgba(160,100,0,.3);}
+.d-monitor{background:#f0f4fa;color:var(--navy-light);border:1px solid rgba(0,86,179,.25);}
+.d-accept{background:var(--green-light);color:var(--green);border:1px solid rgba(26,122,74,.3);}
+
+/* MANIFEST */
+.manifest-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:22px;margin-bottom:20px;}
+.manifest-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px;margin-top:12px;}
+.manifest-table th{color:var(--gray);text-align:left;padding:6px 10px;border-bottom:1px solid var(--border);font-weight:600;}
+.manifest-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);}
+.manifest-table tr:last-child td{border-bottom:none;}
+.manifest-table tr:hover td{background:#fafbfc;}
+.hash{color:var(--purple);font-size:10px;}
+
+/* EXPORT */
+.export-section{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:22px;}
+.export-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.export-item{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px 16px;cursor:pointer;transition:all .15s;flex:1;min-width:160px;}
+.export-item:hover{border-color:var(--navy-light);background:#f0f4fa;}
+.export-item-title{font-size:12px;font-family:var(--mono);font-weight:600;color:var(--navy);margin-bottom:4px;}
+.export-item-desc{font-size:10px;color:var(--gray);font-family:var(--mono);}
+
+.empty-state{text-align:center;padding:56px 20px;background:var(--white);border:1px solid var(--border);border-radius:6px;margin-bottom:20px;}
+.empty-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:8px;font-family:var(--mono);}
+.empty-sub{font-size:12px;color:var(--gray);}
+
+.back-link{font-family:var(--mono);font-size:11px;color:var(--navy-light);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:20px;}
+.back-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div class="breadcrumb">
+  <a href="https://github.com/gilbertocrv/iso27001-iam-governance">ISO27001-IAM-GOVERNANCE</a><span>/</span>
+  <a href="../index.html">IAM-GOVERNANCE-DASHBOARD</a><span>/</span>
+  DASHBOARD
+</div>
+
+<header>
+  <div class="header-left">
+    <h1>IAM_GOVERNANCE_DASHBOARD</h1>
+    <div class="sub">ISO/IEC 27001:2022 + LGPD · v2.0 · gilbertocrv</div>
+  </div>
+  <div class="header-actions">
+    <button class="btn" onclick="toggleImport()">⊕ Importar dados</button>
+    <button class="btn btn-primary" onclick="exportSnapshot()">↓ Export JSON</button>
+  </div>
+</header>
+
+<main>
+  <a href="../index.html" class="back-link">← Voltar ao índice</a>
+
+  <!-- IMPORT -->
+  <div class="import-panel" id="importPanel">
+    <div class="import-panel-header" onclick="toggleImport()">
+      <h2>Importação de dados</h2>
+      <span style="font-size:11px;font-family:var(--mono);color:var(--gray);" id="importLbl">▸ expandir</span>
+    </div>
+    <div class="import-body" id="importBody">
+      <div class="import-tabs">
+        <button class="import-tab active" onclick="switchTab('json')" id="tab-json">JSON — ciclos</button>
+        <button class="import-tab" onclick="switchTab('csv')" id="tab-csv">CSV — métricas</button>
+      </div>
+      <div id="json-body">
+        <div class="drop-zone" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event,'json')">
+          <input type="file" accept=".json" onchange="handleFile(this,'json')">
+          <div class="drop-label">Arraste <span>cycles.json</span> ou clique para selecionar<br>
+            <span style="color:var(--gray);font-size:10px;">Compatível com iam-operational-cycle-toolkit · iam-risk-engineering-toolkit</span>
+          </div>
+        </div>
+      </div>
+      <div id="csv-body" style="display:none;">
+        <div class="drop-zone" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event,'csv')">
+          <input type="file" accept=".csv" onchange="handleFile(this,'csv')">
+          <div class="drop-label">Arraste <span>metrics.csv</span> ou clique para selecionar<br>
+            <span style="color:var(--gray);font-size:10px;">Colunas: control, metric, value, unit, cycle_id, cycle_date, source</span>
+          </div>
+        </div>
+      </div>
+      <div class="trace-log" id="traceLog">
+        <div class="te"><span class="tok">[SISTEMA]</span> dashboard v2.0 inicializado — aguardando importação</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <button class="btn-sm" onclick="loadSample()">Carregar dados de exemplo</button>
+        <button class="btn-sm" style="color:var(--red);border-color:rgba(192,57,43,.3);" onclick="clearData()">✕ Limpar dados</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" id="emptyState">
+    <div class="empty-title">// SEM DADOS CARREGADOS</div>
+    <div class="empty-sub">Importe um arquivo JSON ou CSV para visualizar as métricas.<br>Use "Carregar dados de exemplo" para explorar o dashboard com dados fictícios.</div>
+  </div>
+
+  <!-- DASHBOARD CONTENT -->
+  <div id="dashContent" style="display:none;">
+
+    <div class="cycle-bar">
+      <span class="cycle-label">CICLO:</span>
+      <select class="cycle-select" id="cycleSelect" onchange="renderCycle()"></select>
+      <button class="btn-sm" onclick="prevCycle()">◂</button>
+      <button class="btn-sm" onclick="nextCycle()">▸</button>
+      <span class="cycle-meta" id="cycleMeta"></span>
+    </div>
+
+    <div class="section-label">Visão executiva</div>
+    <div class="overview-grid" id="overviewGrid"></div>
+
+    <div class="section-label">Score de efetividade</div>
+    <div class="score-grid">
+      <div class="score-card" id="scoreMaster"></div>
+      <div class="score-card" id="scoreBreakdown"></div>
+    </div>
+
+    <div class="section-label">Evolução histórica</div>
+    <div class="trend-card">
+      <div class="trend-header">
+        <span style="font-size:11px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;">Score por dimensão — todos os ciclos</span>
+        <span style="font-size:10px;font-family:var(--mono);color:var(--gray);" id="trendCount"></span>
+      </div>
+      <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+    </div>
+
+    <div class="section-label">Métricas por controle ISO</div>
+    <div class="controls-grid" id="controlsGrid"></div>
+
+    <div class="section-label">Avaliação de risco — ISO 27001:2022 + LGPD</div>
+    <div class="risk-panel" id="riskPanel" style="display:none;">
+      <div class="risk-header">
+        <span style="font-size:11px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;">Achados e decisões semi-automáticas</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-sm" onclick="exportRiskCSV()">↓ Decisões CSV</button>
+          <button class="btn-sm" onclick="exportRiskJSON()">↓ Decisões JSON</button>
+        </div>
+      </div>
+      <div class="risk-summary-bar" id="riskBar"></div>
+      <div class="filter-bar" id="filterBar">
+        <span class="filter-label">Filtrar:</span>
+        <button class="import-tab active" id="f-ALL"       onclick="filterRisk('ALL')">Todos</button>
+        <button class="import-tab"        id="f-REMEDIATE" onclick="filterRisk('REMEDIATE')">Remediate</button>
+        <button class="import-tab"        id="f-ESCALATE"  onclick="filterRisk('ESCALATE')">Escalate</button>
+        <button class="import-tab"        id="f-MITIGATE"  onclick="filterRisk('MITIGATE')">Mitigate</button>
+        <button class="import-tab"        id="f-LGPD"      onclick="filterRisk('LGPD')">LGPD trigger</button>
+        <button class="import-tab"        id="f-CONFIRMED" onclick="filterRisk('CONFIRMED')">Confirmados</button>
+        <button class="import-tab"        id="f-PENDING"   onclick="filterRisk('PENDING')">Pendentes</button>
+      </div>
+      <div id="findingsContainer"></div>
+    </div>
+
+    <div class="section-label">Manifesto de auditoria</div>
+    <div class="manifest-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:11px;font-family:var(--mono);color:var(--gray);">Rastreabilidade de cada importação — hash SHA-1 por arquivo</span>
+        <button class="btn-sm" onclick="exportManifest()">↓ Export manifesto CSV</button>
+      </div>
+      <table class="manifest-table">
+        <thead><tr><th>Timestamp</th><th>Arquivo</th><th>Tipo</th><th>Ciclos</th><th>Hash SHA-1</th></tr></thead>
+        <tbody id="manifestBody"></tbody>
+      </table>
+    </div>
+
+    <div class="section-label">Exportações</div>
+    <div class="export-section">
+      <div class="export-grid">
+        <div class="export-item" onclick="exportSnapshot()">
+          <div class="export-item-title">↓ JSON — snapshot ciclo atual</div>
+          <div class="export-item-desc">Compatível com iam-operational-cycle-toolkit</div>
+        </div>
+        <div class="export-item" onclick="exportCsvMetrics()">
+          <div class="export-item-title">↓ CSV — métricas por controle</div>
+          <div class="export-item-desc">control · metric · value · cycle_id · source</div>
+        </div>
+        <div class="export-item" onclick="exportHistory()">
+          <div class="export-item-title">↓ JSON — histórico completo</div>
+          <div class="export-item-desc">Todos os ciclos + manifesto de importações</div>
+        </div>
+        <div class="export-item" onclick="exportRiskCSV()">
+          <div class="export-item-title">↓ CSV — decisões de risco</div>
+          <div class="export-item-desc">ISO 27001 + LGPD · achados + confirmações</div>
+        </div>
+        <div class="export-item" onclick="exportRiskJSON()">
+          <div class="export-item-title">↓ JSON — decisões auditável</div>
+          <div class="export-item-desc">Schema iam-risk-decision/1.0</div>
+        </div>
+        <div class="export-item" onclick="exportAuditReport()">
+          <div class="export-item-title">↓ HTML — relatório para auditor</div>
+          <div class="export-item-desc">Scores + risco + LGPD + manifesto</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /dashContent -->
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ═══════════════════════════════════════════
+// RISK ENGINE v2.0 — ISO/IEC 27001:2022 + LGPD
+// Regras documentadas em: ../docs/risk-model.md
+// ═══════════════════════════════════════════
+const EV = "2.0";
+const LGPD = {
+  FRAUDE_ACESSO_INDEVIDO:     {art:"Art. 46º",           imp:"dados financeiros/pessoais expostos por conflito de função",                       reg:"SANCAO_ADMINISTRATIVA"},
+  COMPROMETIMENTO_CREDENCIAL: {art:"Art. 46º · Art. 48º",imp:"exposição de dados sensíveis por comprometimento de credencial privilegiada",      reg:"SANCAO_ADMINISTRATIVA_NOTIFICACAO_ANPD"},
+  ACESSO_SEM_BASE_LEGAL:      {art:"Art. 6º IV · Art. 46º",imp:"dado pessoal acessado sem revisão de base legal vigente",                        reg:"SANCAO_ADMINISTRATIVA"},
+  FALHA_ACCOUNTABILITY:       {art:"Art. 6º X · Art. 46º", imp:"incapacidade de demonstrar conformidade com medidas de segurança",               reg:"SANCAO_AGRAVADA_AUDITORIA"},
+  GOVERNANCA_SEM_RESPONSAVEL: {art:"Art. 46º",            imp:"ausência de responsável formal por acesso a dados pessoais em grupo",             reg:"RISCO_AUDITORIA"},
+};
+const RULES = {
+  "5.3":  [
+    {m:"conflicts_critical",  lb:"Conflitos SoD críticos",         t:v=>v>10,           d:"REMEDIATE",p:"URGENTE",rl:"CRITICAL",cf:true, rt:"FRAUDE_ACESSO_INDEVIDO",     lt:true},
+    {m:"conflicts_critical",  lb:"Conflitos SoD críticos",         t:v=>v>=5&&v<=10,    d:"MITIGATE", p:"ALTA",   rl:"HIGH",    cf:true, rt:"FRAUDE_ACESSO_INDEVIDO",     lt:true},
+    {m:"conflicts_critical",  lb:"Conflitos SoD críticos",         t:v=>v>=1&&v<5,      d:"MITIGATE", p:"MÉDIA",  rl:"MEDIUM",  cf:false,rt:"FRAUDE_ACESSO_INDEVIDO",     lt:false},
+    {m:"conflicts_critical",  lb:"Conflitos SoD críticos",         t:v=>v===0,          d:"ACCEPT",   p:"BAIXA",  rl:"LOW",     cf:false,rt:null,                         lt:false},
+    {m:"untreated_pct",       lb:"% conflitos não tratados",       t:v=>v>30,           d:"REMEDIATE",p:"ALTA",   rl:"HIGH",    cf:true, rt:"FRAUDE_ACESSO_INDEVIDO",     lt:true},
+    {m:"untreated_pct",       lb:"% conflitos não tratados",       t:v=>v>=15&&v<=30,   d:"MITIGATE", p:"MÉDIA",  rl:"MEDIUM",  cf:false,rt:"FRAUDE_ACESSO_INDEVIDO",     lt:false},
+    {m:"avg_resolution_days", lb:"Tempo médio resolução (dias)",   t:v=>v>30,           d:"ESCALATE", p:"ALTA",   rl:"HIGH",    cf:false,rt:"FRAUDE_ACESSO_INDEVIDO",     lt:false},
+  ],
+  "8.2":  [
+    {m:"mfa_coverage_pct",           lb:"Cobertura MFA",                   t:v=>v<80,         d:"REMEDIATE",p:"URGENTE",rl:"CRITICAL",cf:true, rt:"COMPROMETIMENTO_CREDENCIAL",lt:true},
+    {m:"mfa_coverage_pct",           lb:"Cobertura MFA",                   t:v=>v>=80&&v<90,  d:"REMEDIATE",p:"ALTA",   rl:"HIGH",    cf:true, rt:"COMPROMETIMENTO_CREDENCIAL",lt:true},
+    {m:"mfa_coverage_pct",           lb:"Cobertura MFA",                   t:v=>v>=90,        d:"ACCEPT",   p:"BAIXA",  rl:"LOW",     cf:false,rt:null,                        lt:false},
+    {m:"inactive_accounts_pct",      lb:"Contas privilegiadas inativas",   t:v=>v>15,         d:"REMEDIATE",p:"ALTA",   rl:"HIGH",    cf:true, rt:"COMPROMETIMENTO_CREDENCIAL",lt:true},
+    {m:"inactive_accounts_pct",      lb:"Contas privilegiadas inativas",   t:v=>v>=10&&v<=15, d:"MITIGATE", p:"MÉDIA",  rl:"MEDIUM",  cf:false,rt:"COMPROMETIMENTO_CREDENCIAL",lt:false},
+    {m:"critical_service_principals",lb:"Service principals não revisados",t:v=>v>5,          d:"ESCALATE", p:"ALTA",   rl:"HIGH",    cf:false,rt:"COMPROMETIMENTO_CREDENCIAL",lt:true},
+  ],
+  "5.18": [
+    {m:"reviews_completed_pct",lb:"Revisões concluídas",    t:v=>v<60,         d:"REMEDIATE",p:"URGENTE",rl:"CRITICAL",cf:true, rt:"ACESSO_SEM_BASE_LEGAL",lt:true},
+    {m:"reviews_completed_pct",lb:"Revisões concluídas",    t:v=>v>=60&&v<80,  d:"MITIGATE", p:"ALTA",   rl:"HIGH",    cf:false,rt:"ACESSO_SEM_BASE_LEGAL",lt:true},
+    {m:"reviews_completed_pct",lb:"Revisões concluídas",    t:v=>v>=80,        d:"ACCEPT",   p:"BAIXA",  rl:"LOW",     cf:false,rt:null,                    lt:false},
+    {m:"reviews_overdue_pct",  lb:"Revisões fora do prazo", t:v=>v>20,         d:"ESCALATE", p:"ALTA",   rl:"HIGH",    cf:true, rt:"ACESSO_SEM_BASE_LEGAL",lt:true},
+    {m:"reviews_overdue_pct",  lb:"Revisões fora do prazo", t:v=>v>=10&&v<=20, d:"MITIGATE", p:"MÉDIA",  rl:"MEDIUM",  cf:false,rt:"ACESSO_SEM_BASE_LEGAL",lt:false},
+  ],
+  "5.33": [
+    {m:"decisions_with_evidence_pct",lb:"Decisões com evidência", t:v=>v<70,         d:"REMEDIATE",p:"URGENTE",rl:"CRITICAL",cf:true, rt:"FALHA_ACCOUNTABILITY",lt:true},
+    {m:"decisions_with_evidence_pct",lb:"Decisões com evidência", t:v=>v>=70&&v<85,  d:"MITIGATE", p:"ALTA",   rl:"HIGH",    cf:false,rt:"FALHA_ACCOUNTABILITY",lt:true},
+    {m:"decisions_with_evidence_pct",lb:"Decisões com evidência", t:v=>v>=85,        d:"ACCEPT",   p:"BAIXA",  rl:"LOW",     cf:false,rt:null,                   lt:false},
+    {m:"exceptions_documented_pct",  lb:"Exceções documentadas",  t:v=>v<60,         d:"REMEDIATE",p:"ALTA",   rl:"HIGH",    cf:true, rt:"FALHA_ACCOUNTABILITY",lt:true},
+    {m:"complete_records_pct",       lb:"Registros completos",    t:v=>v<80,         d:"MITIGATE", p:"MÉDIA",  rl:"MEDIUM",  cf:false,rt:"FALHA_ACCOUNTABILITY",lt:false},
+  ],
+  "8.3":  [
+    {m:"groups_without_owner",lb:"Grupos sem owner",t:v=>v>10,        d:"REMEDIATE",p:"ALTA",  rl:"HIGH",  cf:true, rt:"GOVERNANCA_SEM_RESPONSAVEL",lt:true},
+    {m:"groups_without_owner",lb:"Grupos sem owner",t:v=>v>=5&&v<=10, d:"MITIGATE", p:"MÉDIA", rl:"MEDIUM",cf:false,rt:"GOVERNANCA_SEM_RESPONSAVEL",lt:false},
+  ],
+};
+const PRIO={URGENTE:0,ALTA:1,"MÉDIA":2,BAIXA:3};
+const DORD={REMEDIATE:0,ESCALATE:1,MITIGATE:2,MONITOR:3,ACCEPT:4};
+const RLORD={CRITICAL:0,HIGH:1,MEDIUM:2,LOW:3};
+const DS={
+  REMEDIATE:{bg:"#fdf0ef",border:"rgba(192,57,43,.3)",txt:"#c0392b",cls:"d-remediate"},
+  ESCALATE: {bg:"#fdf0ef",border:"rgba(139,0,0,.3)",  txt:"#8b0000",cls:"d-escalate"},
+  MITIGATE: {bg:"#fff8ed",border:"rgba(160,100,0,.3)",txt:"#a06400",cls:"d-mitigate"},
+  MONITOR:  {bg:"#f0f4fa",border:"rgba(0,86,179,.25)",txt:"#0056b3",cls:"d-monitor"},
+  ACCEPT:   {bg:"#e8f5ee",border:"rgba(26,122,74,.3)", txt:"#1a7a4a",cls:"d-accept"},
+};
+
+function evalCycle(cycle){
+  const ctrl=cycle.controls||{};
+  const id=cycle.cycle_id||"?";
+  const dt=cycle.cycle_date||"";
+  const cm={"5.3":ctrl.sod,"5.15":ctrl.rbac,"5.18":ctrl.review,"5.33":ctrl.evidence,"8.2":ctrl.pam,"8.3":ctrl.rbac};
+  const seen=new Map();
+  for(const[cid,data] of Object.entries(cm)){
+    if(!data||!RULES[cid])continue;
+    for(const r of RULES[cid]){
+      const raw=data[r.m];
+      if(raw==null)continue;
+      const v=parseFloat(raw);
+      if(isNaN(v)||!r.t(v))continue;
+      const key=`${cid}::${r.m}`;
+      const ex=seen.get(key);
+      const lg=r.lt&&r.rt?LGPD[r.rt]:null;
+      const f={
+        id:`${cid}-${r.m}-${Math.random().toString(36).slice(2,7)}`,
+        control:cid,metric:r.m,metric_label:r.lb,value:v,cycle_id:id,cycle_date:dt,
+        risk_level:r.rl,control_failure:r.cf,risk_type:r.rt||null,
+        lgpd_trigger:r.lt,
+        lgpd_article:lg?.art||null,lgpd_impact:lg?.imp||null,regulatory_risk:lg?.reg||null,
+        decision_suggested:r.d,decision:r.d,decision_confirmed:false,priority:r.p,
+        analyst_note:"",evaluated_at:new Date().toISOString(),
+      };
+      if(!ex||(RLORD[f.risk_level]??9)<(RLORD[ex.risk_level]??9))seen.set(key,f);
+    }
+  }
+  const findings=[...seen.values()].sort((a,b)=>((PRIO[a.priority]??9)-(PRIO[b.priority]??9))||((DORD[a.decision]??9)-(DORD[b.decision]??9)));
+  return{findings,summary:riskSummary(findings,cycle)};
+}
+function riskSummary(F,cycle){
+  const by={REMEDIATE:0,ESCALATE:0,MITIGATE:0,ACCEPT:0,MONITOR:0};
+  F.forEach(f=>by[f.decision]=(by[f.decision]||0)+1);
+  return{cycle_id:cycle.cycle_id,total_findings:F.length,by_decision:by,
+    control_failures:F.filter(f=>f.control_failure).length,
+    lgpd_triggers:F.filter(f=>f.lgpd_trigger).length,
+    urgent_items:F.filter(f=>f.priority==="URGENTE").length,
+    has_critical:F.some(f=>f.risk_level==="CRITICAL"),
+    evaluated_at:new Date().toISOString()};
+}
+function dBadge(d,confirmed){
+  const s=DS[d]||DS.MONITOR;
+  const dot=confirmed?"●":"○";
+  return`<span class="badge ${s.cls}" style="font-family:'IBM Plex Mono',monospace;font-size:10px;display:inline-flex;align-items:center;gap:3px;"><span style="opacity:${confirmed?1:.4}">${dot}</span> ${d}</span>`;
+}
+function priBadge(p){
+  const c={URGENTE:"#c0392b",ALTA:"#a06400","MÉDIA":"#0056b3",BAIXA:"#1a7a4a"}[p]||"#666";
+  return`<span style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:${c};font-weight:600;">${p}</span>`;
+}
+function rlBadge(r){
+  const c={CRITICAL:"#c0392b",HIGH:"#a06400",MEDIUM:"#0056b3",LOW:"#1a7a4a"}[r]||"#666";
+  return`<span style="font-size:9px;font-family:'IBM Plex Mono',monospace;padding:1px 6px;border-radius:3px;border:1px solid ${c}33;color:${c};">${r}</span>`;
+}
+function lgpdBadge(t){
+  return t?`<span class="badge" style="background:var(--purple-light);color:var(--purple);border:1px solid rgba(91,45,142,.3);font-family:'IBM Plex Mono',monospace;font-size:9px;">LGPD</span>`:"";
+}
+
+// ═══ STATE ═══
+let cycles=[],manifest=[],curIdx=0,chart=null;
+let findings=[],riskSum=null,filter="ALL";
+let impOpen=false;
+
+// ═══ UTILS ═══
+function ts(){return new Date().toISOString().replace("T"," ").substring(0,19);}
+function log(msg,type="ok"){
+  const el=document.getElementById("traceLog");
+  const d=document.createElement("div");d.className="te";
+  d.innerHTML=`<span class="${type==="ok"?"tok":type==="warn"?"twarn":"terr"}">[${ts()}]</span> ${msg}`;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+async function sha1(str){
+  const buf=await crypto.subtle.digest("SHA-1",new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("").substring(0,12);
+}
+function dl(name,content,mime){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([content],{type:mime}));
+  a.download=name;a.click();
+}
+function scoreCol(s){return s>=8?"#1a7a4a":s>=6?"#a06400":"#c0392b";}
+function scoreFillCls(s){return s>=8?"fill-green":s>=6?"fill-amber":"fill-red";}
+function badgeCls(s){return s>=8?"b-baixo":s>=6?"b-medio":"b-alto";}
+function badgeLbl(s){return s>=8?"EFETIVO":s>=6?"MÉDIO":"INSUFICIENTE";}
+function riskCls(r){
+  if(!r)return"b-medio";
+  const v=(r||"").toUpperCase();
+  if(v.includes("CRIT"))return"b-critical";
+  if(v==="ALTO")return"b-alto";
+  if(v.includes("MED"))return"b-medio";
+  return"b-baixo";
+}
+const SRCM={
+  "sap-grc":{lb:"SAP GRC",cls:"src-sap"},"sap-grc-ara":{lb:"SAP ARA",cls:"src-sap"},
+  "salesforce-audit":{lb:"Salesforce",cls:"src-sf"},"totvs-protheus-cfg":{lb:"TOTVS",cls:"src-totvs"},
+  "entra-access-audit":{lb:"Entra ID",cls:"src-entra"},"access-recertification":{lb:"Recert.",cls:"src-entra"},
+  "evidence-register":{lb:"Evidence",cls:"src-entra"},"sod-simulator":{lb:"SoD Sim",cls:"src-entra"},
+  "inline-sample":{lb:"Sample",cls:"src-sample"},"csv-import":{lb:"CSV Import",cls:"src-manual"},
+};
+function srcBadge(src){
+  if(!src)return"";
+  const key=Object.keys(SRCM).find(k=>src.toLowerCase().includes(k))||null;
+  const m=key?SRCM[key]:{lb:src,cls:"src-manual"};
+  return`<span class="src-badge ${m.cls}">${m.lb}</span>`;
+}
+function inferSrc(c){
+  const s=(c.source_file||"").toLowerCase();const r=new Set();
+  if(s.includes("sap")||s.includes("ara"))r.add("sap-grc");
+  if(s.includes("salesforce")||s.includes("sf"))r.add("salesforce-audit");
+  if(s.includes("totvs")||s.includes("protheus"))r.add("totvs-protheus-cfg");
+  if(s.includes("entra")||s.includes("recert")||s.includes("evidence"))r.add("entra-access-audit");
+  if(s.includes("sample")||s.includes("inline"))r.add("inline-sample");
+  if(r.size===0)r.add(s||"csv-import");
+  return[...r];
+}
+
+// ═══ IMPORT ═══
+function toggleImport(){
+  impOpen=!impOpen;
+  document.getElementById("importBody").className="import-body"+(impOpen?" open":"");
+  document.getElementById("importLbl").textContent=impOpen?"▾ recolher":"▸ expandir";
+}
+function switchTab(t){
+  ["json","csv"].forEach(x=>{
+    document.getElementById("tab-"+x).className="import-tab"+(x===t?" active":"");
+    document.getElementById(x+"-body").style.display=x===t?"block":"none";
+  });
+}
+function handleFile(input,type){if(input.files&&input.files[0])processFile(input.files[0],type);}
+function handleDrop(e,type){e.preventDefault();if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0],type);}
+async function processFile(file,type){
+  const text=await file.text();
+  const hash=await sha1(text);
+  log(`arquivo: <span class="thash">${file.name}</span> · ${(file.size/1024).toFixed(1)} KB · hash <span class="thash">${hash}</span>`);
+  try{
+    if(type==="json"){const d=JSON.parse(text);importCycles(Array.isArray(d)?d:[d],file.name,"json",hash);}
+    else importCycles(csvToCycles(parseCSV(text)),file.name,"csv",hash);
+  }catch(e){log(`erro: ${e.message}`,"err");}
+}
+function parseCSV(text){
+  const lines=text.trim().split("\n");
+  const h=lines[0].split(",").map(x=>x.trim());
+  return lines.slice(1).map(l=>{const v=l.split(",");return Object.fromEntries(h.map((k,i)=>[k,(v[i]||"").trim()]));});
+}
+function csvToCycles(rows){
+  const byId={};
+  rows.forEach(r=>{
+    const id=r.cycle_id||"unknown";
+    if(!byId[id])byId[id]={cycle_id:id,cycle_date:r.cycle_date,source_file:"csv-import",imported_at:new Date().toISOString(),controls:{rbac:{control_refs:["5.15","8.3"]},pam:{control_refs:["8.2"]},sod:{control_refs:["5.3"]},review:{control_refs:["5.18"]},evidence:{control_refs:["5.33"]}},summary:{}};
+    const v=parseFloat(r.value);
+    const cm={access_via_group_pct:"rbac",direct_access_pct:"rbac",groups_without_owner:"rbac",users_multiple_roles_pct:"rbac",privileged_accounts:"pam",mfa_coverage_pct:"pam",inactive_accounts_pct:"pam",critical_service_principals:"pam",conflicts_total:"sod",conflicts_critical:"sod",conflicts_medium:"sod",conflicts_low:"sod",untreated_pct:"sod",avg_resolution_days:"sod",reviews_completed_pct:"review",reviews_overdue_pct:"review",revocation_rate_pct:"review",maintenance_rate_pct:"review",decisions_with_evidence_pct:"evidence",exceptions_documented_pct:"evidence",complete_records_pct:"evidence",avg_report_hours:"evidence"};
+    const tgt=cm[r.metric];if(tgt)byId[id].controls[tgt][r.metric]=v;
+  });
+  return Object.values(byId).map(c=>{autoScore(c);return c;});
+}
+function autoScore(c){
+  const ctrl=c.controls;
+  if(ctrl.rbac&&!ctrl.rbac.score){ctrl.rbac.score=Math.round(((ctrl.rbac.access_via_group_pct||0)/10+Math.max(0,10-(ctrl.rbac.groups_without_owner||0)*.3))/2*10)/10;}
+  if(ctrl.pam&&!ctrl.pam.score){ctrl.pam.score=Math.round(((ctrl.pam.mfa_coverage_pct||0)/10+Math.max(0,10-(ctrl.pam.inactive_accounts_pct||0)*.4))/2*10)/10;}
+  if(ctrl.sod&&!ctrl.sod.score){ctrl.sod.score=Math.round((Math.max(0,10-(ctrl.sod.untreated_pct||0)*.15)+Math.max(0,10-(ctrl.sod.avg_resolution_days||0)*.2))/2*10)/10;}
+  if(ctrl.review&&!ctrl.review.score)ctrl.review.score=Math.round((ctrl.review.reviews_completed_pct||0)/10*10)/10;
+  if(ctrl.evidence&&!ctrl.evidence.score)ctrl.evidence.score=Math.round(((ctrl.evidence.decisions_with_evidence_pct||0)+(ctrl.evidence.complete_records_pct||0))/2/10*10)/10;
+  const sc=[ctrl.rbac?.score,ctrl.pam?.score,ctrl.sod?.score,ctrl.review?.score,ctrl.evidence?.score].filter(x=>x!=null);
+  if(!c.summary)c.summary={};
+  if(!c.summary.overall_score&&sc.length)c.summary.overall_score=Math.round(sc.reduce((a,b)=>a+b,0)/sc.length*10)/10;
+  if(!c.summary.residual_risk){const avg=c.summary.overall_score||0;c.summary.residual_risk=avg>=8?"BAIXO":avg>=6?"MÉDIO":avg>=4?"ALTO":"CRÍTICO";}
+}
+function importCycles(arr,filename,type,hash){
+  let added=0,skipped=0;
+  arr.forEach(c=>{
+    if(!c.cycle_id){skipped++;return;}
+    const ex=cycles.findIndex(x=>x.cycle_id===c.cycle_id);
+    if(ex>=0)cycles[ex]=c;else{cycles.push(c);added++;}
+    autoScore(c);
+  });
+  cycles.sort((a,b)=>a.cycle_date<b.cycle_date?-1:1);
+  manifest.push({timestamp:ts(),filename,type,cycles_imported:arr.length,added,skipped,hash});
+  log(`importado: ${added} novo(s), ${skipped} ignorado(s) · hash: <span class="thash">${hash}</span>`,added>0?"ok":"warn");
+  curIdx=cycles.length-1;
+  renderAll();
+}
+function loadSample(){
+  const S=[
+    {cycle_id:"2025-Q3",cycle_date:"2025-09-01",source_file:"inline-sample",imported_at:"2025-09-01T08:00:00Z",controls:{rbac:{access_via_group_pct:65,direct_access_pct:35,groups_without_owner:31,users_multiple_roles_pct:44,score:5.0},pam:{privileged_accounts:115,mfa_coverage_pct:68,inactive_accounts_pct:21,critical_service_principals:25,score:4.5},sod:{conflicts_total:60,conflicts_critical:24,conflicts_medium:25,conflicts_low:11,untreated_pct:55,avg_resolution_days:30,score:3.0},review:{reviews_completed_pct:58,reviews_overdue_pct:32,revocation_rate_pct:15,maintenance_rate_pct:85,score:4.0},evidence:{decisions_with_evidence_pct:74,exceptions_documented_pct:40,complete_records_pct:70,avg_report_hours:8,score:6.0}},summary:{total_accesses:2640,overall_score:4.5,residual_risk:"CRÍTICO"}},
+    {cycle_id:"2025-Q4",cycle_date:"2025-12-01",source_file:"inline-sample",imported_at:"2025-12-01T08:00:00Z",controls:{rbac:{access_via_group_pct:72,direct_access_pct:28,groups_without_owner:22,users_multiple_roles_pct:38,score:6.0},pam:{privileged_accounts:118,mfa_coverage_pct:78,inactive_accounts_pct:16,critical_service_principals:21,score:5.5},sod:{conflicts_total:52,conflicts_critical:18,conflicts_medium:22,conflicts_low:12,untreated_pct:42,avg_resolution_days:24,score:4.0},review:{reviews_completed_pct:65,reviews_overdue_pct:25,revocation_rate_pct:20,maintenance_rate_pct:80,score:5.0},evidence:{decisions_with_evidence_pct:82,exceptions_documented_pct:55,complete_records_pct:79,avg_report_hours:6,score:7.0}},summary:{total_accesses:2731,overall_score:5.5,residual_risk:"ALTO"}},
+    {cycle_id:"2026-Q1",cycle_date:"2026-03-01",source_file:"inline-sample",imported_at:"2026-03-01T08:00:00Z",controls:{rbac:{access_via_group_pct:78,direct_access_pct:22,groups_without_owner:15,users_multiple_roles_pct:34,score:7.0},pam:{privileged_accounts:120,mfa_coverage_pct:85,inactive_accounts_pct:12,critical_service_principals:18,score:6.0},sod:{conflicts_total:45,conflicts_critical:12,conflicts_medium:20,conflicts_low:13,untreated_pct:30,avg_resolution_days:18,score:5.0},review:{reviews_completed_pct:72,reviews_overdue_pct:18,revocation_rate_pct:25,maintenance_rate_pct:75,score:6.0},evidence:{decisions_with_evidence_pct:90,exceptions_documented_pct:65,complete_records_pct:88,avg_report_hours:4,score:8.0}},summary:{total_accesses:2847,overall_score:6.4,residual_risk:"ALTO"}},
+  ];
+  importCycles(S,"inline-sample","json","inline-sample");
+}
+function clearData(){
+  if(!confirm("Limpar todos os dados?"))return;
+  cycles=[];manifest=[];curIdx=0;findings=[];riskSum=null;
+  document.getElementById("emptyState").style.display="block";
+  document.getElementById("dashContent").style.display="none";
+  log("dados limpos pelo usuário","warn");
+}
+
+// ═══ RENDER ═══
+function renderAll(){
+  document.getElementById("emptyState").style.display="none";
+  document.getElementById("dashContent").style.display="block";
+  const sel=document.getElementById("cycleSelect");
+  sel.innerHTML=cycles.map((c,i)=>`<option value="${i}" ${i===curIdx?"selected":""}>${c.cycle_id}</option>`).join("");
+  renderCycle();
+  renderManifest();
+}
+function prevCycle(){if(curIdx>0){curIdx--;document.getElementById("cycleSelect").value=curIdx;renderCycle();}}
+function nextCycle(){if(curIdx<cycles.length-1){curIdx++;document.getElementById("cycleSelect").value=curIdx;renderCycle();}}
+function renderCycle(){
+  curIdx=parseInt(document.getElementById("cycleSelect").value)||curIdx;
+  const c=cycles[curIdx];if(!c)return;
+  document.getElementById("cycleMeta").textContent=`${c.cycle_date||""} · fonte: ${c.source_file||"—"}`;
+  renderOverview(c);renderScore(c);renderControls(c);renderRisk(c);renderTrend();
+}
+function renderOverview(c){
+  const s=c.summary||{};
+  const prev=cycles[curIdx-1];
+  const delta=prev?(s.overall_score-(prev.summary?.overall_score||0)).toFixed(1):null;
+  const ds=delta!=null?(parseFloat(delta)>=0?`+${delta} vs anterior`:`${delta} vs anterior`):"primeiro ciclo";
+  document.getElementById("overviewGrid").innerHTML=`
+    <div class="ov-card"><div class="ov-label">Acessos totais</div><div class="ov-value">${(s.total_accesses||"—").toLocaleString()}</div></div>
+    <div class="ov-card"><div class="ov-label">Contas privilegiadas</div><div class="ov-value">${c.controls?.pam?.privileged_accounts||"—"}</div><div class="ov-sub">MFA: ${c.controls?.pam?.mfa_coverage_pct||"—"}%</div></div>
+    <div class="ov-card"><div class="ov-label">Conflitos SoD críticos</div><div class="ov-value" style="color:var(--red)">${c.controls?.sod?.conflicts_critical||"—"}</div><div class="ov-sub">${c.controls?.sod?.untreated_pct||"—"}% sem tratamento</div></div>
+    <div class="ov-card"><div class="ov-label">Revisões concluídas</div><div class="ov-value">${c.controls?.review?.reviews_completed_pct||"—"}%</div><div class="ov-sub">${c.controls?.review?.reviews_overdue_pct||"—"}% fora do prazo</div></div>
+    <div class="ov-card"><div class="ov-label">Risco residual</div><div class="ov-value" style="font-size:14px;margin-top:8px;"><span class="badge ${riskCls(s.residual_risk)}">${s.residual_risk||"—"}</span></div><div class="ov-sub">${ds}</div></div>
+  `;
+}
+function renderScore(c){
+  const s=c.summary?.overall_score||0;
+  const ctrl=c.controls||{};
+  const dims=[{n:"Estrutura RBAC",k:"rbac"},{n:"Criticidade PAM",k:"pam"},{n:"Risco SoD",k:"sod"},{n:"Governança Rev.",k:"review"},{n:"Auditabilidade",k:"evidence"}];
+  document.getElementById("scoreMaster").innerHTML=`
+    <div class="score-card-label">Control Effectiveness Score</div>
+    <div><span class="score-big" style="color:${scoreCol(s)}">${s.toFixed(1)}</span><span class="score-denom"> / 10</span></div>
+    <div style="margin-top:10px;"><span class="badge ${badgeCls(s)}">${badgeLbl(s)}</span></div>
+    <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--gray);margin-top:14px;">ISO 27001:2022 · 9.1 — Monitoring & Measurement</div>
+  `;
+  document.getElementById("scoreBreakdown").innerHTML=`
+    <div class="score-card-label">Score por dimensão</div>
+    ${dims.map(d=>{const v=ctrl[d.k]?.score||0;return`<div class="score-row"><span class="score-row-name">${d.n}</span><div class="score-track"><div class="score-fill ${scoreFillCls(v)}" style="width:${v*10}%"></div></div><span class="score-val" style="color:${scoreCol(v)}">${v.toFixed(1)}</span></div>`;}).join("")}
+  `;
+}
+function renderControls(c){
+  const ctrl=c.controls||{};
+  const srcs=inferSrc(c);
+  const cards=[
+    {t:"Estrutura — RBAC Quality",k:"rbac",r:"5.15 · 8.3",rows:[
+      {l:"Acesso via grupo",v:ctrl.rbac?.access_via_group_pct,u:"%",cls:ctrl.rbac?.access_via_group_pct>=80?"mr-good":"mr-warn"},
+      {l:"Acesso direto",v:ctrl.rbac?.direct_access_pct,u:"%",cls:ctrl.rbac?.direct_access_pct>25?"mr-warn":""},
+      {l:"Grupos sem owner",v:ctrl.rbac?.groups_without_owner,u:"",cls:ctrl.rbac?.groups_without_owner>10?"mr-bad":""},
+      {l:"Usuários c/ múltiplas roles",v:ctrl.rbac?.users_multiple_roles_pct,u:"%",cls:ctrl.rbac?.users_multiple_roles_pct>30?"mr-warn":""},
+    ]},
+    {t:"Criticidade — Privileged Access",k:"pam",r:"8.2",rows:[
+      {l:"Contas privilegiadas",v:ctrl.pam?.privileged_accounts,u:"",cls:""},
+      {l:"Cobertura MFA",v:ctrl.pam?.mfa_coverage_pct,u:"%",cls:ctrl.pam?.mfa_coverage_pct<90?"mr-warn":"mr-good"},
+      {l:"Contas inativas >30d",v:ctrl.pam?.inactive_accounts_pct,u:"%",cls:ctrl.pam?.inactive_accounts_pct>10?"mr-bad":""},
+      {l:"Service principals críticos",v:ctrl.pam?.critical_service_principals,u:"",cls:"mr-warn"},
+    ]},
+    {t:"Risco — Segregation of Duties",k:"sod",r:"5.3",rows:[
+      {l:"Conflitos totais",v:ctrl.sod?.conflicts_total,u:"",cls:""},
+      {l:"Conflitos críticos",v:ctrl.sod?.conflicts_critical,u:"",cls:ctrl.sod?.conflicts_critical>0?"mr-bad":"mr-good"},
+      {l:"% não tratados",v:ctrl.sod?.untreated_pct,u:"%",cls:ctrl.sod?.untreated_pct>20?"mr-bad":"mr-warn"},
+      {l:"Tempo médio resolução",v:ctrl.sod?.avg_resolution_days,u:" dias",cls:ctrl.sod?.avg_resolution_days>15?"mr-warn":""},
+    ]},
+    {t:"Governança — Access Review",k:"review",r:"5.18",rows:[
+      {l:"Revisões concluídas",v:ctrl.review?.reviews_completed_pct,u:"%",cls:ctrl.review?.reviews_completed_pct>=80?"mr-good":"mr-warn"},
+      {l:"Fora do prazo",v:ctrl.review?.reviews_overdue_pct,u:"%",cls:ctrl.review?.reviews_overdue_pct>15?"mr-bad":""},
+      {l:"Taxa de revogação",v:ctrl.review?.revocation_rate_pct,u:"%",cls:""},
+      {l:"Taxa de manutenção",v:ctrl.review?.maintenance_rate_pct,u:"%",cls:""},
+    ]},
+    {t:"Auditabilidade — Evidence",k:"evidence",r:"5.33",rows:[
+      {l:"Decisões com evidência",v:ctrl.evidence?.decisions_with_evidence_pct,u:"%",cls:ctrl.evidence?.decisions_with_evidence_pct>=90?"mr-good":"mr-warn"},
+      {l:"Exceções documentadas",v:ctrl.evidence?.exceptions_documented_pct,u:"%",cls:ctrl.evidence?.exceptions_documented_pct<70?"mr-warn":"mr-good"},
+      {l:"Registros completos",v:ctrl.evidence?.complete_records_pct,u:"%",cls:ctrl.evidence?.complete_records_pct>=85?"mr-good":"mr-warn"},
+      {l:"Tempo médio relatório",v:ctrl.evidence?.avg_report_hours,u:"h",cls:""},
+    ]},
+  ];
+  document.getElementById("controlsGrid").innerHTML=cards.map(card=>{
+    const sc=ctrl[card.k]?.score||0;
+    const sb=(ctrl[card.k]?.source||c.source_file||"");
+    const srcH=sb?srcBadge(sb):srcs.map(s=>srcBadge(s)).join("");
+    return`<div class="ctrl-card">
+      <div class="ctrl-header">
+        <div><div class="ctrl-title">${card.t}</div><div class="ctrl-refs">${card.r}</div></div>
+        <span class="badge ${badgeCls(sc)} ctrl-score">${sc.toFixed(1)}</span>
+      </div>
+      ${card.rows.map(r=>`<div class="metric-row"><span class="mr-label">${r.l}</span><span class="mr-val ${r.cls||""}">${r.v!=null?r.v+r.u:"—"}</span></div>`).join("")}
+      <div class="src-panel">${srcH}</div>
+    </div>`;
+  }).join("");
+}
+function renderTrend(){
+  const labels=cycles.map(c=>c.cycle_id);
+  const DS2=[
+    {label:"Score geral",data:cycles.map(c=>c.summary?.overall_score||0),borderColor:"#003366",tension:.3,pointRadius:4,pointBackgroundColor:"#003366"},
+    {label:"RBAC",data:cycles.map(c=>c.controls?.rbac?.score||0),borderColor:"#1a7a4a",tension:.3,pointRadius:3,borderDash:[4,3],pointBackgroundColor:"#1a7a4a"},
+    {label:"PAM",data:cycles.map(c=>c.controls?.pam?.score||0),borderColor:"#5b2d8e",tension:.3,pointRadius:3,borderDash:[4,3],pointBackgroundColor:"#5b2d8e"},
+    {label:"SoD",data:cycles.map(c=>c.controls?.sod?.score||0),borderColor:"#c0392b",tension:.3,pointRadius:3,borderDash:[4,3],pointBackgroundColor:"#c0392b"},
+    {label:"Review",data:cycles.map(c=>c.controls?.review?.score||0),borderColor:"#a06400",tension:.3,pointRadius:3,borderDash:[4,3],pointBackgroundColor:"#a06400"},
+    {label:"Evidence",data:cycles.map(c=>c.controls?.evidence?.score||0),borderColor:"#0056b3",tension:.3,pointRadius:3,borderDash:[4,3],pointBackgroundColor:"#0056b3"},
+  ];
+  document.getElementById("trendCount").textContent=`${cycles.length} ciclo(s)`;
+  if(chart)chart.destroy();
+  chart=new Chart(document.getElementById("trendChart"),{
+    type:"line",data:{labels,datasets:DS2},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:"bottom",labels:{color:"#666",font:{size:10,family:"IBM Plex Mono"},boxWidth:12,padding:12}}},
+      scales:{y:{min:0,max:10,ticks:{color:"#999",font:{size:10,family:"IBM Plex Mono"}},grid:{color:"rgba(0,0,0,.05)"}},x:{ticks:{color:"#666",font:{size:10,family:"IBM Plex Mono"}},grid:{color:"rgba(0,0,0,.04)"}}}}
+  });
+}
+function renderManifest(){
+  document.getElementById("manifestBody").innerHTML=manifest.map(m=>`<tr>
+    <td>${m.timestamp}</td><td>${m.filename}</td><td>${m.type}</td>
+    <td>${m.cycles_imported} (${m.added} add · ${m.skipped} skip)</td>
+    <td><span class="hash">${m.hash}</span></td>
+  </tr>`).join()||`<tr><td colspan="5" style="color:var(--gray);padding:16px;">Nenhuma importação registrada.</td></tr>`;
+}
+
+// ═══ RISK PANEL ═══
+function renderRisk(cycle){
+  const res=evalCycle(cycle);
+  // If this cycle already has persisted decisions, restore confirmed state + analyst notes
+  if(cycle.risk_decisions?.findings?.length){
+    const persisted=cycle.risk_decisions.findings;
+    res.findings.forEach(f=>{
+      const p=persisted.find(x=>x.control===f.control&&x.metric===f.metric);
+      if(p&&p.decision_confirmed){
+        f.decision=p.decision;
+        f.decision_confirmed=true;
+        f.analyst_note=p.analyst_note||"";
+        f.confirmed_at=p.confirmed_at||null;
+      }
+    });
+    log(`decisões restauradas do ciclo ${cycle.cycle_id}: ${persisted.filter(x=>x.decision_confirmed).length} confirmadas`,"ok");
+  }
+  findings=res.findings.map(f=>({...f}));
+  riskSum=riskSummary(findings,cycle);
+  // Sync restored decisions back into cycle immediately
+  if(cycle.risk_decisions){persistDecisions();}
+  document.getElementById("riskPanel").style.display="block";
+  renderRiskBar(riskSum);
+  renderFindings();
+  log(`motor de risco: ${findings.length} achados · ${riskSum.lgpd_triggers} LGPD · ${riskSum.urgent_items} urgentes`,"ok");
+}
+function renderRiskBar(s){
+  if(!s)return;
+  const st=(v,lb,c)=>`<div class="risk-stat"><span class="risk-stat-val" style="color:${c}">${v}</span><span class="risk-stat-label">${lb}</span></div>`;
+  document.getElementById("riskBar").innerHTML=
+    st(s.total_findings,"achados","var(--navy)")+`<div class="risk-sep"></div>`+
+    st(s.by_decision.REMEDIATE||0,"remediate","var(--red)")+`<div class="risk-sep"></div>`+
+    st(s.by_decision.ESCALATE||0,"escalate","#8b0000")+`<div class="risk-sep"></div>`+
+    st(s.by_decision.MITIGATE||0,"mitigate","var(--amber)")+`<div class="risk-sep"></div>`+
+    st(s.by_decision.ACCEPT||0,"accept","var(--green)")+`<div class="risk-sep" style="margin:0 8px;"></div>`+
+    st(s.lgpd_triggers,"LGPD","var(--purple)")+`<div class="risk-sep"></div>`+
+    st(s.control_failures,"falhas ctrl.","var(--red)")+`<div class="risk-sep"></div>`+
+    st(s.urgent_items,"urgentes","var(--red)")+
+    (s.has_critical?`<div class="risk-sep" style="margin:0 8px;"></div><span style="font-size:10px;font-family:var(--mono);color:var(--red);align-self:center;font-weight:600;">⚠ RISCO CRÍTICO ATIVO</span>`:"");
+}
+function filterRisk(f){
+  filter=f;
+  document.querySelectorAll("#filterBar .import-tab").forEach(b=>b.classList.remove("active"));
+  const btn=document.getElementById("f-"+f);if(btn)btn.classList.add("active");
+  renderFindings();
+}
+function renderFindings(){
+  const el=document.getElementById("findingsContainer");
+  let fs=findings;
+  if(filter==="LGPD")        fs=fs.filter(f=>f.lgpd_trigger);
+  else if(filter==="CONFIRMED")fs=fs.filter(f=>f.decision_confirmed);
+  else if(filter==="PENDING")  fs=fs.filter(f=>!f.decision_confirmed);
+  else if(filter!=="ALL")      fs=fs.filter(f=>f.decision===filter);
+  if(!fs.length){el.innerHTML=`<div style="text-align:center;padding:20px;font-size:12px;font-family:var(--mono);color:var(--gray);">Nenhum achado nesta categoria.</div>`;return;}
+  el.innerHTML=fs.map(f=>`
+    <div class="finding-card ${f.lgpd_trigger?"has-lgpd":""} ${f.decision_confirmed?"confirmed":""}" id="fc-${f.id}">
+      <div class="finding-header">
+        <span class="finding-ctrl">${f.control}</span>
+        <span class="finding-metric">${f.metric_label}</span>
+        <span class="finding-value">${f.value}${f.metric.includes("pct")?"%":""}</span>
+      </div>
+      <div class="finding-badges">
+        ${dBadge(f.decision,f.decision_confirmed)}
+        ${priBadge(f.priority)}
+        ${rlBadge(f.risk_level)}
+        ${lgpdBadge(f.lgpd_trigger)}
+        ${f.control_failure?`<span class="badge b-critical" style="font-family:var(--mono);font-size:9px;">FALHA DE CONTROLE</span>`:""}
+        <span style="font-size:9px;font-family:var(--mono);color:${f.decision_confirmed?"var(--green)":"var(--gray)"};">${f.decision_confirmed?"✓ confirmado":"○ aguarda confirmação"}</span>
+      </div>
+      ${f.lgpd_trigger&&f.lgpd_impact?`<div class="finding-lgpd-box">
+        <div class="finding-lgpd-label">Impacto LGPD</div>
+        <div class="finding-lgpd-text">${f.lgpd_impact}</div>
+        <div class="finding-lgpd-art">${f.lgpd_article||""} · ${f.regulatory_risk||""}</div>
+      </div>`:""}
+      <div class="finding-actions">
+        <span style="font-size:10px;font-family:var(--mono);color:var(--gray);">Decisão:</span>
+        <select class="finding-select" onchange="updDec('${f.id}',this.value)">
+          ${["REMEDIATE","ESCALATE","MITIGATE","MONITOR","ACCEPT"].map(d=>`<option value="${d}" ${f.decision===d?"selected":""}>${d}</option>`).join("")}
+        </select>
+        <input class="finding-note" type="text" placeholder="Justificativa do analista…" value="${f.analyst_note||""}" oninput="updNote('${f.id}',this.value)">
+        <button class="finding-confirm" onclick="confirmF('${f.id}')">${f.decision_confirmed?"✓ Confirmado":"Confirmar →"}</button>
+      </div>
+    </div>
+  `).join("");
+}
+function updDec(id,val){const f=findings.find(x=>x.id===id);if(f){f.decision=val;f.decision_confirmed=false;}}
+function updNote(id,val){const f=findings.find(x=>x.id===id);if(f)f.analyst_note=val;}
+function confirmF(id){
+  const f=findings.find(x=>x.id===id);if(!f)return;
+  if(!f.analyst_note.trim()&&f.decision!==f.decision_suggested)
+    log(`aviso: ${f.control}/${f.metric} — justificativa recomendada ao alterar decisão sugerida`,"warn");
+  f.decision_confirmed=true;f.confirmed_at=new Date().toISOString();
+  // ── PERSIST: write confirmed decisions back into the cycle object ──
+  persistDecisions();
+  renderFindings();
+  riskSum=riskSummary(findings,cycles[curIdx]||{});
+  renderRiskBar(riskSum);
+  const conf=findings.filter(x=>x.decision_confirmed).length;
+  log(`${f.control}/${f.metric} → ${f.decision} confirmado e persistido no ciclo (${conf}/${findings.length})`,"ok");
+}
+
+/**
+ * Persists all current findings (confirmed and pending) into the cycle object.
+ * cycles[curIdx].risk_decisions holds the full decision record.
+ * cycles[curIdx].risk_summary holds the aggregate summary.
+ * This makes every export (snapshot, history, audit report) carry the decisions.
+ */
+function persistDecisions(){
+  const c=cycles[curIdx];if(!c)return;
+  c.risk_decisions={
+    _persisted_at: new Date().toISOString(),
+    engine_version: EV,
+    normative_refs: ["ISO/IEC 27001:2022","LGPD Lei 13.709/2018"],
+    confirmed_count: findings.filter(x=>x.decision_confirmed).length,
+    total_count: findings.length,
+    findings: findings.map(f=>({
+      control:            f.control,
+      metric:             f.metric,
+      metric_label:       f.metric_label,
+      value:              f.value,
+      risk_level:         f.risk_level,
+      control_failure:    f.control_failure,
+      risk_type:          f.risk_type,
+      lgpd_trigger:       f.lgpd_trigger,
+      lgpd_article:       f.lgpd_article,
+      lgpd_impact:        f.lgpd_impact,
+      regulatory_risk:    f.regulatory_risk,
+      decision_suggested: f.decision_suggested,
+      decision:           f.decision,
+      decision_confirmed: f.decision_confirmed,
+      priority:           f.priority,
+      analyst_note:       f.analyst_note,
+      evaluated_at:       f.evaluated_at,
+      confirmed_at:       f.confirmed_at||null,
+    }))
+  };
+  c.risk_summary = riskSummary(findings, c);
+}
+
+// ═══ EXPORTS ═══
+function exportSnapshot(){
+  const c=cycles[curIdx];if(!c)return;
+  // Ensure latest decisions are persisted before export
+  persistDecisions();
+  const confirmed=c.risk_decisions?.confirmed_count||0;
+  const total=c.risk_decisions?.total_count||0;
+  dl(`iam-snapshot-${c.cycle_id}-${Date.now()}.json`,
+    JSON.stringify({...c,_meta:{exported_at:new Date().toISOString(),version:EV,
+      risk_decisions_status:`${confirmed}/${total} confirmadas`}},null,2),
+    "application/json");
+  log(`export snapshot: ${c.cycle_id} · ${confirmed}/${total} decisões persistidas`,"ok");
+}
+function exportCsvMetrics(){
+  const c=cycles[curIdx];if(!c)return;
+  const ctrl=c.controls||{};
+  const rows=[["control","metric","value","unit","cycle_id","cycle_date","source"]];
+  const a=(ct,m,v,u)=>rows.push([ct,m,v||"",u,c.cycle_id,c.cycle_date||"",c.source_file||""]);
+  if(ctrl.rbac){a("5.15","access_via_group_pct",ctrl.rbac.access_via_group_pct,"percent");a("5.15","direct_access_pct",ctrl.rbac.direct_access_pct,"percent");a("8.3","groups_without_owner",ctrl.rbac.groups_without_owner,"count");}
+  if(ctrl.pam){a("8.2","privileged_accounts",ctrl.pam.privileged_accounts,"count");a("8.2","mfa_coverage_pct",ctrl.pam.mfa_coverage_pct,"percent");a("8.2","inactive_accounts_pct",ctrl.pam.inactive_accounts_pct,"percent");}
+  if(ctrl.sod){a("5.3","conflicts_total",ctrl.sod.conflicts_total,"count");a("5.3","conflicts_critical",ctrl.sod.conflicts_critical,"count");a("5.3","untreated_pct",ctrl.sod.untreated_pct,"percent");a("5.3","avg_resolution_days",ctrl.sod.avg_resolution_days,"days");}
+  if(ctrl.review){a("5.18","reviews_completed_pct",ctrl.review.reviews_completed_pct,"percent");a("5.18","reviews_overdue_pct",ctrl.review.reviews_overdue_pct,"percent");}
+  if(ctrl.evidence){a("5.33","decisions_with_evidence_pct",ctrl.evidence.decisions_with_evidence_pct,"percent");a("5.33","exceptions_documented_pct",ctrl.evidence.exceptions_documented_pct,"percent");a("5.33","complete_records_pct",ctrl.evidence.complete_records_pct,"percent");}
+  dl(`iam-metrics-${c.cycle_id}-${Date.now()}.csv`,rows.map(r=>r.join(",")).join("\n"),"text/csv");
+  log(`export CSV: ${c.cycle_id} · ${rows.length-1} linhas`,"ok");
+}
+function exportHistory(){
+  // Persist current cycle decisions before exporting history
+  persistDecisions();
+  dl(`iam-history-${Date.now()}.json`,JSON.stringify({
+    _meta:{exported_at:new Date().toISOString(),cycles_count:cycles.length,version:EV,
+      note:"risk_decisions field in each cycle contains confirmed analyst decisions"},
+    manifest,cycles},null,2),"application/json");
+  log(`export histórico: ${cycles.length} ciclo(s) · decisões de risco incluídas`,"ok");
+}
+function exportManifest(){
+  const rows=[["timestamp","filename","type","cycles_imported","added","skipped","hash"]];
+  manifest.forEach(m=>rows.push([m.timestamp,m.filename,m.type,m.cycles_imported,m.added,m.skipped,m.hash]));
+  dl(`iam-manifest-${Date.now()}.csv`,rows.map(r=>r.join(",")).join("\n"),"text/csv");
+  log("export manifesto CSV","ok");
+}
+function exportRiskCSV(){
+  if(!findings.length)return;
+  const cols=["control","metric","metric_label","value","cycle_id","cycle_date","risk_level","control_failure","risk_type","lgpd_trigger","lgpd_article","lgpd_impact","regulatory_risk","decision_suggested","decision","decision_confirmed","priority","analyst_note","evaluated_at"];
+  const esc=v=>{const s=String(v??"");return(s.includes(",")||s.includes('"'))?`"${s.replace(/"/g,'""')}"`:s;};
+  dl(`iam-risk-${findings[0]?.cycle_id}-${Date.now()}.csv`,[cols.join(","),...findings.map(f=>cols.map(c=>esc(f[c])).join(","))].join("\n"),"text/csv");
+  log(`export CSV decisões: ${findings.length} achados`,"ok");
+}
+function exportRiskJSON(){
+  if(!findings.length)return;
+  dl(`iam-risk-${findings[0]?.cycle_id}-${Date.now()}.json`,JSON.stringify({_meta:{schema:"iam-risk-decision/1.0",generated_at:new Date().toISOString(),engine_version:EV,normative_refs:["ISO/IEC 27001:2022","LGPD Lei 13.709/2018"]},summary:riskSum,manifest_ref:manifest.slice(-5),findings},null,2),"application/json");
+  log(`export JSON decisões: ${findings.length} achados`,"ok");
+}
+function exportAuditReport(){
+  const c=cycles[curIdx];if(!c)return;
+  // Persist decisions into cycle before generating report
+  persistDecisions();
+  const ctrl=c.controls||{};const s=c.summary||{};
+  const rd=c.risk_decisions||{};
+  const confirmedCount=rd.confirmed_count||0;
+  const totalCount=rd.total_count||0;
+  const allFindings=rd.findings||findings;
+  const rRows=allFindings.length?allFindings.map(f=>`<tr>
+    <td>${f.control}</td><td>${f.metric_label}</td>
+    <td>${f.value}${f.metric&&f.metric.includes("pct")?"%":""}</td><td>${f.risk_level}</td>
+    <td><strong>${f.decision}</strong>${f.decision!==f.decision_suggested?` <em style="color:#888;font-size:10px;">(sug: ${f.decision_suggested})</em>`:""}</td>
+    <td>${f.priority}</td>
+    <td style="${f.lgpd_trigger?"color:#5b2d8e;":""}">${f.lgpd_trigger?f.lgpd_article||"Sim":"—"}</td>
+    <td style="${f.lgpd_trigger?"color:#5b2d8e;font-size:10px;":""}">${f.lgpd_trigger?f.regulatory_risk||"—":"—"}</td>
+    <td style="${f.decision_confirmed?"color:#1a7a4a;font-weight:700;":"color:#a06400;"}">${f.decision_confirmed?"✓ confirmado":"○ pendente"}</td>
+    <td>${f.decision_confirmed&&f.confirmed_at?`<span style="color:#1a7a4a;">${f.confirmed_at.substring(0,16).replace("T"," ")}</span>`:"—"}</td>
+    <td>${f.analyst_note||"—"}</td>
+  </tr>`).join(""):"<tr><td colspan='11' style='color:#888;'>Motor de risco não executado.</td></tr>";
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>IAM Audit Report — ${c.cycle_id}</title>
+<style>body{font-family:'Segoe UI',sans-serif;max-width:1050px;margin:40px auto;color:#1a2340;font-size:13px;line-height:1.6;}
+h1{font-size:20px;font-weight:700;color:#003366;margin-bottom:4px;}h2{font-size:13px;font-weight:700;color:#003366;margin:24px 0 10px;border-bottom:2px solid #c8922a;padding-bottom:6px;}
+.meta{color:#666;font-size:11px;font-family:monospace;margin-bottom:24px;padding:10px 14px;background:#f4f6f8;border-radius:4px;}
+table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px;}
+th{background:#003366;color:#fff;text-align:left;padding:8px 10px;font-size:11px;}
+td{padding:6px 10px;border-bottom:1px solid #d1d9e4;}tr:hover td{background:#f4f6f8;}
+.b{font-weight:700;}.score-big{font-size:36px;font-weight:700;color:#003366;}
+.badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;}
+.b-alto{background:#fdf0ef;color:#c0392b;}.b-medio{background:#fff8ed;color:#a06400;}.b-baixo{background:#e8f5ee;color:#1a7a4a;}.b-critical{background:#fdf0ef;color:#8b0000;}
+footer{margin-top:40px;font-size:10px;color:#888;border-top:1px solid #d1d9e4;padding-top:12px;}</style>
+</head><body>
+<h1>IAM Governance — Relatório de Auditoria</h1>
+<div class="meta">Ciclo: <b>${c.cycle_id}</b> · Data: ${c.cycle_date||"—"} · Gerado em: ${new Date().toISOString()} · Fonte: ${c.source_file||"—"} · ISO/IEC 27001:2022 + LGPD Lei 13.709/2018 · v${EV}</div>
+<div class="meta" style="background:#e8f5ee;border-left:3px solid #1a7a4a;color:#1a2340;">
+  <strong>Cadeia de evidência:</strong> ${confirmedCount}/${totalCount} achados confirmados pelo analista · Decisões persistidas em: ${rd._persisted_at||"—"} · risk_decisions incluído no ciclo JSON
+</div>
+<h2>Visão Executiva</h2>
+<table><tr><th>Métrica</th><th>Valor</th></tr>
+<tr><td>Score geral de efetividade</td><td><span class="score-big">${s.overall_score||"—"}</span> / 10</td></tr>
+<tr><td>Risco residual</td><td><span class="badge b-${(s.residual_risk||"").toLowerCase().replace("é","e").replace("í","i")}">${s.residual_risk||"—"}</span></td></tr>
+<tr><td>Acessos totais</td><td>${(s.total_accesses||"—").toLocaleString()}</td></tr>
+<tr><td>Achados de risco</td><td>${totalCount} total · ${confirmedCount} confirmados · ${totalCount-confirmedCount} pendentes</td></tr>
+${riskSum?`<tr><td>LGPD triggers</td><td>${riskSum.lgpd_triggers} · ${riskSum.urgent_items} urgentes · ${riskSum.control_failures} falhas de controle</td></tr>`:""}
+</table>
+<h2>Scores por Controle</h2>
+<table><tr><th>Controle(s)</th><th>Dimensão</th><th>Score</th><th>Efetividade</th></tr>
+<tr><td>5.15 · 8.3</td><td>Estrutura RBAC</td><td class="b">${ctrl.rbac?.score||"—"} / 10</td><td>${badgeLbl(ctrl.rbac?.score||0)}</td></tr>
+<tr><td>8.2</td><td>Criticidade PAM</td><td class="b">${ctrl.pam?.score||"—"} / 10</td><td>${badgeLbl(ctrl.pam?.score||0)}</td></tr>
+<tr><td>5.3</td><td>Risco SoD</td><td class="b">${ctrl.sod?.score||"—"} / 10</td><td>${badgeLbl(ctrl.sod?.score||0)}</td></tr>
+<tr><td>5.18</td><td>Governança — Review</td><td class="b">${ctrl.review?.score||"—"} / 10</td><td>${badgeLbl(ctrl.review?.score||0)}</td></tr>
+<tr><td>5.33</td><td>Auditabilidade</td><td class="b">${ctrl.evidence?.score||"—"} / 10</td><td>${badgeLbl(ctrl.evidence?.score||0)}</td></tr>
+</table>
+<h2>Avaliação de Risco — ISO 27001:2022 + LGPD Lei 13.709/2018</h2>
+<p style="font-size:11px;color:#666;margin-bottom:10px;">Decisões sugeridas pelo motor de risco e confirmadas pelo analista. Persistidas em <code>cycle.risk_decisions</code> no JSON do ciclo.</p>
+<table><tr><th>Controle</th><th>Métrica</th><th>Valor</th><th>Risco</th><th>Decisão</th><th>Prioridade</th><th>Art. LGPD</th><th>Risco Reg.</th><th>Status</th><th>Confirmado em</th><th>Nota analista</th></tr>
+${rRows}</table>
+<h2>Manifesto de Importação</h2>
+<table><tr><th>Timestamp</th><th>Arquivo</th><th>Ciclos</th><th>Hash SHA-1</th></tr>
+${manifest.map(m=>`<tr><td>${m.timestamp}</td><td>${m.filename}</td><td>${m.cycles_imported}</td><td style="font-family:monospace;color:#5b2d8e;">${m.hash}</td></tr>`).join("")}
+</table>
+<footer>IAM Governance Dashboard v${EV} · Gilberto Gonçalves dos Santos Filho · gilbertocrv · ISO/IEC 27001:2022 · LGPD Lei 13.709/2018 · Conteúdo educacional — não substitui consultoria especializada.</footer>
+</body></html>`;
+  dl(`iam-audit-report-${c.cycle_id}-${Date.now()}.html`,html,"text/html");
+  log(`export HTML relatório auditor: ${c.cycle_id}`,"ok");
+}
+
+log("aguardando dados — use \"Carregar dados de exemplo\" para explorar");
+</script>
+</body>
+</html>

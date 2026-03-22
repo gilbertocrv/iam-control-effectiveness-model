@@ -1,0 +1,11 @@
+UserId,Username,IsActive,LastLoginDate,ProfileName,PermissionSetCount,PermissionSets,MfaEnabled,MfaMethod,Department,UserLicense
+005001,joao.silva@acme.com,true,2026-03-20,Standard User,2,"Sales_Full;Analytics_View",true,Authenticator,Sales,Salesforce
+005002,maria.santos@acme.com,true,2026-03-18,System Administrator,0,,true,Authenticator,IT,Salesforce
+005003,pedro.costa@acme.com,true,2026-03-15,Standard User,3,"Finance_View;Reports_Full;DataExport",false,,Finance,Salesforce
+005004,ana.oliveira@acme.com,true,2025-11-10,Standard User,1,"Finance_View",true,SMS,Finance,Salesforce
+005005,lucas.rocha@acme.com,true,2026-03-19,Sales Manager,2,"Sales_Full;Approval_Manager",true,Authenticator,Sales,Salesforce
+005006,fernanda.lima@acme.com,false,2025-08-05,Standard User,0,,false,,HR,Salesforce
+005007,roberto.nunes@acme.com,true,2026-03-01,Standard User,1,"Procurement_View",true,Authenticator,Procurement,Salesforce
+005008,carla.dias@acme.com,true,2026-02-28,Standard User,4,"Finance_View;Reports_Full;DataExport;Admin_Lite",false,,Finance,Salesforce
+005009,thiago.alves@acme.com,true,2026-03-20,System Administrator,2,"API_Access;DataExport",true,Authenticator,IT,Salesforce
+005010,juliana.moura@acme.com,true,2026-03-17,Sales Manager,1,"Sales_Full",true,Authenticator,Sales,Salesforce

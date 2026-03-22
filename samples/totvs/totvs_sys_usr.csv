@@ -1,0 +1,16 @@
+USR_CODE,USR_NAME,USR_GROUP,USR_GROUPNAME,USR_STATUS,USR_DTLAST,USR_TYPE,USR_OWNER,USR_EMAIL,USR_DEPT
+ADM001,Administrador Sistema,ADMIN,Administradores,1,20260320,S,,ti@acme.com.br,TI
+FIN001,Carlos Mendes,FINANC,Financeiro,1,20260318,N,Gerente Financeiro,carlos@acme.com.br,Financeiro
+FIN002,Paula Ferreira,FINANC,Financeiro,1,20260315,N,Gerente Financeiro,paula@acme.com.br,Financeiro
+FIN003,Marcos Souza,FINANC,Financeiro,1,20251120,N,Gerente Financeiro,marcos@acme.com.br,Financeiro
+FIN004,Sandra Ramos,FINANC,Financeiro,1,20250805,N,,sandra@acme.com.br,Financeiro
+EST001,Ricardo Lima,ESTOQUE,Estoque,1,20260310,N,Supervisor Estoque,ricardo@acme.com.br,Logística
+EST002,Tatiana Nobre,ESTOQUE,Estoque,1,20260301,N,Supervisor Estoque,tatiana@acme.com.br,Logística
+CPR001,Henrique Castro,COMPRAS,Compras,1,20260319,N,Gerente Compras,henrique@acme.com.br,Compras
+CPR002,Beatriz Alves,COMPRAS,Compras,1,20260220,N,Gerente Compras,beatriz@acme.com.br,Compras
+RH001,Luciana Pinto,RH,Recursos Humanos,1,20260312,N,Gerente RH,luciana@acme.com.br,RH
+RH002,Eduardo Costa,RH,Recursos Humanos,1,20251010,N,,eduardo@acme.com.br,RH
+TI001,Felipe Martins,TI,Tecnologia da Informação,1,20260318,S,,felipe@acme.com.br,TI
+GRP_SEM,Grupo Sem Owner,MULTIP,Multiplos,1,20260101,N,,sem@acme.com.br,Geral
+GRP_SEM2,Grupo Sem Owner 2,MULTIP2,Multiplos2,1,20260101,N,,sem2@acme.com.br,Geral
+INAT001,Usuario Inativo Antigo,FINANC,Financeiro,1,20250601,N,,inat@acme.com.br,Financeiro

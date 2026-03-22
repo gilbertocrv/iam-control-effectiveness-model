@@ -1,0 +1,8 @@
+USR_CODE,USR_NAME,ROTINA_A,DESC_ROTINA_A,ROTINA_B,DESC_ROTINA_B,CONFLICT_TYPE,SEVERITY
+FIN001,Carlos Mendes,FINA010,Contas a Pagar - Inclusão,FINA030,Liberação de Pagamento,AP_PAYMENT,Critical
+FIN002,Paula Ferreira,FINA010,Contas a Pagar - Inclusão,FINA030,Liberação de Pagamento,AP_PAYMENT,Critical
+CPR001,Henrique Castro,COMP010,Solicitação de Compra,COMP030,Recebimento de Mercadoria,PO_GR,High
+EST001,Ricardo Lima,ESTO010,Entrada de Estoque,ESTO030,Ajuste de Inventário,STOCK_ADJ,High
+FIN003,Marcos Souza,FINA050,Conciliação Bancária,FINA030,Liberação de Pagamento,BANK_PAY,Medium
+RH001,Luciana Pinto,RH010,Cadastro de Funcionário,RH030,Processamento de Folha,HR_PAYROLL,Critical
+CPR002,Beatriz Alves,COMP010,Solicitação de Compra,COMP020,Aprovação de Compra,PO_APPROVAL,Medium

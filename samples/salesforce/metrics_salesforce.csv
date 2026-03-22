@@ -1,0 +1,9 @@
+control,metric,value,unit,cycle_id,cycle_date,source
+5.15,access_via_group_pct,77.78,percent,2026-Q1,2026-03-31,salesforce-audit
+5.15,direct_access_pct,22.22,percent,2026-Q1,2026-03-31,salesforce-audit
+8.2,privileged_accounts,2,count,2026-Q1,2026-03-31,salesforce-audit
+8.2,mfa_coverage_pct,77.78,percent,2026-Q1,2026-03-31,salesforce-audit
+8.2,inactive_accounts_pct,11.11,percent,2026-Q1,2026-03-31,salesforce-audit
+8.3,users_multiple_roles_pct,55.56,percent,2026-Q1,2026-03-31,salesforce-audit
+5.33,decisions_with_evidence_pct,80.0,percent,2026-Q1,2026-03-31,salesforce-audit
+5.33,exceptions_documented_pct,75.0,percent,2026-Q1,2026-03-31,salesforce-audit

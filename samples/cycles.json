@@ -1,0 +1,167 @@
+[
+  {
+    "cycle_id": "2026-Q1",
+    "cycle_date": "2026-03-01",
+    "source_file": "cycles.json",
+    "imported_at": "2026-03-01T08:00:00Z",
+    "controls": {
+      "rbac": {
+        "control_refs": ["5.15", "8.3"],
+        "access_via_group_pct": 78,
+        "direct_access_pct": 22,
+        "groups_without_owner": 15,
+        "users_multiple_roles_pct": 34,
+        "score": 7.0
+      },
+      "pam": {
+        "control_refs": ["8.2"],
+        "privileged_accounts": 120,
+        "mfa_coverage_pct": 85,
+        "inactive_accounts_pct": 12,
+        "critical_service_principals": 18,
+        "score": 6.0
+      },
+      "sod": {
+        "control_refs": ["5.3"],
+        "conflicts_total": 45,
+        "conflicts_critical": 12,
+        "conflicts_medium": 20,
+        "conflicts_low": 13,
+        "untreated_pct": 30,
+        "avg_resolution_days": 18,
+        "score": 5.0
+      },
+      "review": {
+        "control_refs": ["5.18"],
+        "reviews_completed_pct": 72,
+        "reviews_overdue_pct": 18,
+        "revocation_rate_pct": 25,
+        "maintenance_rate_pct": 75,
+        "score": 6.0
+      },
+      "evidence": {
+        "control_refs": ["5.33"],
+        "decisions_with_evidence_pct": 90,
+        "exceptions_documented_pct": 65,
+        "complete_records_pct": 88,
+        "avg_report_hours": 4,
+        "score": 8.0
+      }
+    },
+    "summary": {
+      "total_accesses": 2847,
+      "overall_score": 6.4,
+      "residual_risk": "ALTO"
+    }
+  },
+  {
+    "cycle_id": "2025-Q4",
+    "cycle_date": "2025-12-01",
+    "source_file": "cycles.json",
+    "imported_at": "2025-12-01T08:00:00Z",
+    "controls": {
+      "rbac": {
+        "control_refs": ["5.15", "8.3"],
+        "access_via_group_pct": 72,
+        "direct_access_pct": 28,
+        "groups_without_owner": 22,
+        "users_multiple_roles_pct": 38,
+        "score": 6.0
+      },
+      "pam": {
+        "control_refs": ["8.2"],
+        "privileged_accounts": 118,
+        "mfa_coverage_pct": 78,
+        "inactive_accounts_pct": 16,
+        "critical_service_principals": 21,
+        "score": 5.5
+      },
+      "sod": {
+        "control_refs": ["5.3"],
+        "conflicts_total": 52,
+        "conflicts_critical": 18,
+        "conflicts_medium": 22,
+        "conflicts_low": 12,
+        "untreated_pct": 42,
+        "avg_resolution_days": 24,
+        "score": 4.0
+      },
+      "review": {
+        "control_refs": ["5.18"],
+        "reviews_completed_pct": 65,
+        "reviews_overdue_pct": 25,
+        "revocation_rate_pct": 20,
+        "maintenance_rate_pct": 80,
+        "score": 5.0
+      },
+      "evidence": {
+        "control_refs": ["5.33"],
+        "decisions_with_evidence_pct": 82,
+        "exceptions_documented_pct": 55,
+        "complete_records_pct": 79,
+        "avg_report_hours": 6,
+        "score": 7.0
+      }
+    },
+    "summary": {
+      "total_accesses": 2731,
+      "overall_score": 5.5,
+      "residual_risk": "ALTO"
+    }
+  },
+  {
+    "cycle_id": "2025-Q3",
+    "cycle_date": "2025-09-01",
+    "source_file": "cycles.json",
+    "imported_at": "2025-09-01T08:00:00Z",
+    "controls": {
+      "rbac": {
+        "control_refs": ["5.15", "8.3"],
+        "access_via_group_pct": 65,
+        "direct_access_pct": 35,
+        "groups_without_owner": 31,
+        "users_multiple_roles_pct": 44,
+        "score": 5.0
+      },
+      "pam": {
+        "control_refs": ["8.2"],
+        "privileged_accounts": 115,
+        "mfa_coverage_pct": 68,
+        "inactive_accounts_pct": 21,
+        "critical_service_principals": 25,
+        "score": 4.5
+      },
+      "sod": {
+        "control_refs": ["5.3"],
+        "conflicts_total": 60,
+        "conflicts_critical": 24,
+        "conflicts_medium": 25,
+        "conflicts_low": 11,
+        "untreated_pct": 55,
+        "avg_resolution_days": 30,
+        "score": 3.0
+      },
+      "review": {
+        "control_refs": ["5.18"],
+        "reviews_completed_pct": 58,
+        "reviews_overdue_pct": 32,
+        "revocation_rate_pct": 15,
+        "maintenance_rate_pct": 85,
+        "score": 4.0
+      },
+      "evidence": {
+        "control_refs": ["5.33"],
+        "decisions_with_evidence_pct": 74,
+        "exceptions_documented_pct": 40,
+        "complete_records_pct": 70,
+        "avg_report_hours": 8,
+        "score": 6.0
+      }
+    },
+    "summary": {
+      "total_accesses": 2640,
+      "overall_score": 4.5,
+      "residual_risk": "CRÍTICO"
+    }
+  }
+]

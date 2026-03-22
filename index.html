@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IAM Governance Dashboard | Série 3 — Métricas</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#003366;--navy-mid:#004080;--navy-light:#0056b3;--accent:#c8922a;
+  --accent-light:#e8a83a;--bg:#f4f6f8;--white:#fff;--gray:#666;
+  --border:#d1d9e4;--text:#1a2340;--green:#1a7a4a;--green-light:#e8f5ee;
+  --amber:#a06400;--amber-light:#fff8ed;--red:#c0392b;--red-light:#fdf0ef;
+  --purple:#5b2d8e;--purple-light:#f5f0ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+
+.breadcrumb{background:var(--navy);padding:10px 30px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.4)}
+.breadcrumb a{color:var(--accent-light);text-decoration:none}
+.breadcrumb span{margin:0 6px}
+
+header{background:var(--navy);padding:52px 30px 48px;position:relative;overflow:hidden}
+header::after{content:'S3';position:absolute;bottom:-20px;right:20px;font-family:'IBM Plex Mono',monospace;font-size:160px;font-weight:700;color:rgba(255,255,255,.03);pointer-events:none}
+.header-inner{max-width:1100px;margin:auto;position:relative;z-index:1}
+.serie-badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;background:rgba(200,146,42,.2);color:var(--accent-light);border:1px solid rgba(200,146,42,.4);padding:4px 12px;border-radius:3px;letter-spacing:2px;margin-bottom:18px}
+header h1{font-size:34px;font-weight:700;color:#fff;margin-bottom:12px}
+header h1 span{color:var(--accent-light)}
+header p{font-size:14px;color:rgba(255,255,255,.68);max-width:700px;margin-bottom:20px}
+.header-meta{display:flex;gap:10px;flex-wrap:wrap}
+.meta-pill{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 10px;border:1px solid rgba(255,255,255,.14);border-radius:3px;color:rgba(255,255,255,.65)}
+
+main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+
+/* Serie context */
+.serie-context{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px}
+.serie-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:20px 22px}
+.serie-card.active{border-left:3px solid var(--accent)}
+.serie-card h3{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.serie-card p{font-size:12px;color:var(--gray)}
+.serie-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 8px;border-radius:3px;margin-bottom:8px;display:inline-block}
+.tag-done{background:var(--green-light);color:var(--green)}
+.tag-active{background:var(--amber-light);color:var(--amber)}
+
+/* Connectors */
+.connectors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:36px}
+.connector-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:18px 20px;transition:box-shadow .2s}
+.connector-card:hover{box-shadow:0 4px 16px rgba(0,51,102,.08)}
+.connector-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 8px;border-radius:3px;margin-bottom:12px;display:inline-block}
+.pill-sap{background:#e8f2fc;color:#0056b3}
+.pill-sf{background:#e8f4fb;color:#006cb0}
+.pill-totvs{background:var(--amber-light);color:var(--amber)}
+.pill-entra{background:var(--purple-light);color:var(--purple)}
+.pill-planned{background:#f0f0f0;color:#999}
+.connector-card h3{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.connector-card p{font-size:12px;color:var(--gray);line-height:1.6;margin-bottom:12px}
+.connector-links{display:flex;gap:8px;flex-wrap:wrap}
+.connector-link{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 10px;border:1px solid var(--border);border-radius:4px;text-decoration:none;color:var(--navy-light);background:#fff}
+.connector-link:hover{border-color:var(--navy-light)}
+.connector-link.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.connector-link.primary:hover{background:var(--navy-mid)}
+
+/* Main tool card */
+.tool-main{background:var(--white);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:6px;padding:28px;margin-bottom:36px;display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
+.tool-main-info{flex:1;min-width:240px}
+.tool-step{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 8px;border-radius:3px;margin-bottom:14px;display:inline-block;background:var(--green-light);color:var(--green)}
+.tool-main h2{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:10px}
+.tool-main p{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:16px}
+.ctrl-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.ctrl-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 7px;background:#f0f4fa;color:var(--navy-light);border-radius:3px}
+.tool-link{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;padding:11px 20px;background:var(--navy);color:#fff;border-radius:4px;text-decoration:none;transition:background .15s}
+.tool-link:hover{background:var(--navy-mid)}
+.tool-main-features{flex:1;min-width:240px}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.feature-list li{font-size:12px;color:var(--gray);padding-left:16px;position:relative;line-height:1.5}
+.feature-list li::before{content:'→';position:absolute;left:0;color:var(--accent)}
+
+/* Flow */
+.flow-wrap{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:24px;margin-bottom:36px}
+.flow-steps{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;margin-top:16px}
+.flow-step{flex:1;min-width:120px;padding:14px 12px;border:1px solid var(--border);border-radius:6px;text-align:center;background:#fafbfc}
+.flow-step-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:4px}
+.flow-step-name{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.flow-step-desc{font-size:11px;color:var(--gray)}
+.flow-arrow{font-size:18px;color:#c8d4e0;display:flex;align-items:center;flex-shrink:0}
+
+/* Exports */
+.exports-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:36px}
+.export-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px 18px}
+.export-card h4{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.export-card p{font-size:11px;color:var(--gray);line-height:1.5}
+.export-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 7px;border-radius:3px;margin-bottom:8px;display:inline-block;background:#f0f4fa;color:var(--navy-light)}
+
+/* Docs */
+.docs-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px}
+.doc-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:18px 20px}
+.doc-card h4{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.doc-card p{font-size:12px;color:var(--gray);line-height:1.6}
+.doc-card a{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--navy-light);text-decoration:none;margin-top:10px;display:inline-block}
+
+/* Samples */
+.samples-wrap{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:20px 22px;margin-bottom:36px}
+.samples-wrap p{font-size:13px;color:var(--gray);margin-bottom:14px}
+.samples-links{display:flex;gap:10px;flex-wrap:wrap}
+.sample-link{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--navy-light);text-decoration:none;border:1px solid var(--border);padding:8px 12px;border-radius:4px;background:#fff}
+.sample-link:hover{border-color:var(--navy-light)}
+
+/* LGPD note */
+.lgpd-note{background:var(--purple-light);border:1px solid rgba(91,45,142,.2);border-radius:6px;padding:16px 20px;margin-bottom:36px;display:flex;gap:14px;align-items:flex-start}
+.lgpd-note-icon{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--purple);background:rgba(91,45,142,.1);padding:4px 8px;border-radius:3px;flex-shrink:0;margin-top:2px}
+.lgpd-note p{font-size:12px;color:var(--purple);line-height:1.65}
+.lgpd-note strong{display:block;margin-bottom:4px;font-size:13px}
+
+/* Footer */
+.footer{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
+.footer-author{font-size:13px;color:var(--gray)}
+.footer-author strong{color:var(--navy);display:block;margin-bottom:4px}
+.footer-links{display:flex;gap:8px;flex-wrap:wrap}
+.footer-link{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--navy-light);text-decoration:none;border:1px solid var(--border);background:#fff;border-radius:4px;padding:8px 12px}
+.footer-link:hover{border-color:var(--navy-light)}
+.footer-note{width:100%;font-size:11px;color:var(--gray);padding-top:16px;border-top:1px solid var(--border)}
+
+@media(max-width:900px){.serie-context{grid-template-columns:1fr}}
+@media(max-width:768px){.docs-grid{grid-template-columns:1fr}.flow-steps{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div class="breadcrumb">
+  <a href="https://github.com/gilbertocrv/iso27001-iam-governance">ISO27001-IAM-GOVERNANCE</a><span>/</span>
+  <a href="https://github.com/gilbertocrv/iam-operational-cycle-toolkit">IAM-OPERATIONAL-CYCLE-TOOLKIT</a><span>/</span>
+  IAM-GOVERNANCE-DASHBOARD
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="serie-badge">SÉRIE 3 · MÉTRICAS E DECISÃO</div>
+    <h1>IAM Governance <span>Dashboard</span></h1>
+    <p>Visualização de scores de efetividade, avaliação de risco com camada LGPD e suporte à decisão semi-automática. Importa dados de SAP GRC, Salesforce, TOTVS Protheus e Microsoft Entra ID. Exporta evidências auditáveis em JSON, CSV e HTML.</p>
+    <div class="header-meta">
+      <span class="meta-pill">ISO/IEC 27001:2022</span>
+      <span class="meta-pill">LGPD Lei 13.709/2018</span>
+      <span class="meta-pill">SAP GRC · Salesforce · TOTVS</span>
+      <span class="meta-pill">Processamento local</span>
+      <span class="meta-pill">Conteúdo educacional</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="section-label">Contexto do projeto</div>
+  <div class="serie-context">
+    <div class="serie-card">
+      <span class="serie-tag tag-done">✓ SÉRIE 2 — CONCLUÍDA</span>
+      <h3>Governança</h3>
+      <p>Políticas, padrões técnicos, procedimentos. Define <em>o que deveria existir</em> em um programa IAM alinhado à ISO 27001.</p>
+    </div>
+    <div class="serie-card">
+      <span class="serie-tag tag-done">✓ SÉRIE 3 — CICLO</span>
+      <h3>Operação</h3>
+      <p>Ciclo completo de revisão de acessos — análise, decisão, registro e saída auditável. Valida <em>se o que foi definido está funcionando</em>.</p>
+    </div>
+    <div class="serie-card active">
+      <span class="serie-tag tag-active">→ SÉRIE 3 — MÉTRICAS</span>
+      <h3>Métricas e Decisão</h3>
+      <p>Scores de efetividade por controle, risco ISO + LGPD e decisão confirmada pelo analista. <em>Mostra os resultados</em> com rastreabilidade completa.</p>
+    </div>
+  </div>
+
+  <div class="section-label">Dashboard — ferramenta principal</div>
+  <div class="tool-main">
+    <div class="tool-main-info">
+      <span class="tool-step">FERRAMENTA PRINCIPAL</span>
+      <h2>IAM Governance Dashboard</h2>
+      <p>Importa dados de qualquer plataforma IAM (JSON ou CSV), calcula scores de efetividade por controle ISO, avalia risco com mapeamento LGPD e gera decisões semi-automáticas para confirmação do analista. Histórico de múltiplos ciclos com rastreabilidade de cada importação via hash SHA-1.</p>
+      <div class="ctrl-row">
+        <span class="ctrl-tag">5.3</span><span class="ctrl-tag">5.15</span><span class="ctrl-tag">5.18</span>
+        <span class="ctrl-tag">5.33</span><span class="ctrl-tag">8.2</span><span class="ctrl-tag">8.3</span>
+        <span class="ctrl-tag">LGPD</span>
+      </div>
+      <a href="tools/dashboard.html" class="tool-link">Abrir dashboard →</a>
+    </div>
+    <div class="tool-main-features">
+      <ul class="feature-list">
+        <li>Import JSON (cycles.json) e CSV (metrics.csv) com qualquer plataforma de origem</li>
+        <li>Score de efetividade por dimensão: RBAC · PAM · SoD · Review · Evidence</li>
+        <li>Motor de risco ISO 27001 — regras por threshold com LGPD trigger</li>
+        <li>Decisão sugerida (REMEDIATE / ESCALATE / MITIGATE / ACCEPT) confirmada pelo analista</li>
+        <li>Gráfico de evolução histórica por ciclo</li>
+        <li>Badge de fonte por plataforma: SAP GRC · Salesforce · TOTVS · Entra ID</li>
+        <li>Manifesto de auditoria com hash SHA-1 por importação</li>
+        <li>Export: JSON snapshot · CSV métricas · JSON decisões · HTML relatório auditor</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">Conectores suportados</div>
+  <div class="connectors-grid">
+
+    <div class="connector-card">
+      <span class="connector-pill pill-entra">Microsoft Entra ID</span>
+      <h3>Entra ID / Graph API</h3>
+      <p>Import direto via CSV nativo. Compatível com exports do iam-operational-cycle-toolkit (findings, evidence-register).</p>
+      <div class="connector-links">
+        <a href="tools/dashboard.html" class="connector-link primary">Dashboard →</a>
+        <a href="samples/metrics.csv" class="connector-link">Sample CSV</a>
+      </div>
+    </div>
+
+    <div class="connector-card">
+      <span class="connector-pill pill-sap">SAP GRC</span>
+      <h3>SAP GRC — ARA · SUIM · EAM</h3>
+      <p>ARA (violações SoD) · SUIM (usuários e perfis) · EAM Firefighter (acesso privilegiado). Script de conversão incluído.</p>
+      <div class="connector-links">
+        <a href="scripts/sap_to_metrics.py" class="connector-link primary">Script →</a>
+        <a href="docs/template-sap-grc.md" class="connector-link">Guia extração</a>
+        <a href="samples/sap/sap_ara_violations.csv" class="connector-link">Sample</a>
+      </div>
+    </div>
+
+    <div class="connector-card">
+      <span class="connector-pill pill-sf">Salesforce</span>
+      <h3>Salesforce — Users · Audit Trail</h3>
+      <p>Users + Permission Sets · Setup Audit Trail · Security Health Check. Script de conversão incluído.</p>
+      <div class="connector-links">
+        <a href="scripts/salesforce_to_metrics.py" class="connector-link primary">Script →</a>
+        <a href="docs/template-salesforce.md" class="connector-link">Guia extração</a>
+        <a href="samples/salesforce/sf_users_profiles.csv" class="connector-link">Sample</a>
+      </div>
+    </div>
+
+    <div class="connector-card">
+      <span class="connector-pill pill-totvs">TOTVS Protheus</span>
+      <h3>TOTVS — SigaCFG · ADS SQL</h3>
+      <p>SYS_USR · SIGAPBF · Conflitos SoD via query SQL no dicionário ADS. Foco em conformidade com LGPD e legislação brasileira.</p>
+      <div class="connector-links">
+        <a href="scripts/totvs_to_metrics.py" class="connector-link primary">Script →</a>
+        <a href="docs/template-totvs.md" class="connector-link">Guia extração</a>
+        <a href="samples/totvs/totvs_sys_usr.csv" class="connector-link">Sample</a>
+      </div>
+    </div>
+
+    <div class="connector-card">
+      <span class="connector-pill pill-planned">Planejado</span>
+      <h3>ServiceNow · CyberArk · OIG</h3>
+      <p>ServiceNow GRC · CyberArk PAM (Vault + Session) · Oracle Identity Governance · Active Directory on-premises.</p>
+      <div class="connector-links">
+        <span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#999;padding:5px 0;">Série 4 — planejado</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Fluxo de dados</div>
+  <div class="flow-wrap">
+    <p style="font-size:13px;color:var(--gray);">Cada plataforma tem um script de conversão que normaliza os dados para o formato metrics.csv. O dashboard importa e gera evidências auditáveis com rastreabilidade completa.</p>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-step-num">EXTRAÇÃO</div>
+        <div class="flow-step-name">Plataforma</div>
+        <div class="flow-step-desc">SAP · SF · TOTVS · Entra</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-num">CONVERSÃO</div>
+        <div class="flow-step-name">Script Python</div>
+        <div class="flow-step-desc">*_to_metrics.py</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-num">IMPORT</div>
+        <div class="flow-step-name">Dashboard</div>
+        <div class="flow-step-desc">JSON ou CSV</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-num">ANÁLISE</div>
+        <div class="flow-step-name">Score + Risco</div>
+        <div class="flow-step-desc">ISO 27001 + LGPD</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-step-num">SAÍDA</div>
+        <div class="flow-step-name">Evidências</div>
+        <div class="flow-step-desc">JSON · CSV · HTML</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Exportações disponíveis</div>
+  <div class="exports-grid">
+    <div class="export-card">
+      <span class="export-tag">JSON</span>
+      <h4>Snapshot do ciclo atual</h4>
+      <p>Estrutura completa do ciclo com metadados de export. Compatível com iam-operational-cycle-toolkit.</p>
+    </div>
+    <div class="export-card">
+      <span class="export-tag">CSV</span>
+      <h4>Métricas por controle</h4>
+      <p>Uma linha por métrica: control · metric · value · unit · cycle_id · cycle_date · source.</p>
+    </div>
+    <div class="export-card">
+      <span class="export-tag">JSON</span>
+      <h4>Histórico completo</h4>
+      <p>Todos os ciclos carregados com manifesto de importações. Para visão histórica e comparativa.</p>
+    </div>
+    <div class="export-card">
+      <span class="export-tag">CSV</span>
+      <h4>Decisões de risco</h4>
+      <p>Achados com risk_level, lgpd_article, decision, priority e nota do analista.</p>
+    </div>
+    <div class="export-card">
+      <span class="export-tag">JSON</span>
+      <h4>Decisões auditável</h4>
+      <p>Schema iam-risk-decision/1.0 com _meta, summary, manifest_ref e findings completos.</p>
+    </div>
+    <div class="export-card">
+      <span class="export-tag">HTML</span>
+      <h4>Relatório para auditor</h4>
+      <p>Documento autossuficiente com scores, risco ISO + LGPD, manifesto e decisões confirmadas.</p>
+    </div>
+  </div>
+
+  <div class="section-label">Camada de risco — ISO 27001 + LGPD</div>
+  <div class="lgpd-note">
+    <span class="lgpd-note-icon">LGPD</span>
+    <div>
+      <p><strong>Modelo de risco documentado em docs/risk-model.md</strong>
+      O dashboard avalia cada métrica contra thresholds definidos por controle ISO e mapeia o impacto regulatório LGPD correspondente. Falhas críticas em SoD (5.3), PAM (8.2), revisão (5.18) e evidência (5.33) geram achados com artigo LGPD, tipo de risco regulatório e decisão sugerida. O analista confirma ou ajusta cada decisão antes do export — garantindo rastreabilidade da decisão humana sobre o risco identificado.</p>
+    </div>
+  </div>
+
+  <div class="section-label">Documentação</div>
+  <div class="docs-grid">
+    <div class="doc-card">
+      <h4>Modelo de risco — ISO 27001 + LGPD</h4>
+      <p>Mapeamento de controles para risco operacional, impacto LGPD por artigo e regras de decisão com thresholds documentados.</p>
+      <a href="docs/risk-model.md">→ risk-model.md</a>
+    </div>
+    <div class="doc-card">
+      <h4>Modelo de dados — JSON e CSV</h4>
+      <p>Especificação dos formatos de entrada e saída, campos obrigatórios, cálculo automático de scores e validação de schema.</p>
+      <a href="docs/data-model.md">→ data-model.md</a>
+    </div>
+    <div class="doc-card">
+      <h4>Template de extração — SAP GRC</h4>
+      <p>Procedimento para exportar violações ARA, usuários SUIM e log Firefighter EAM. Mapeamento campo a campo para o dashboard.</p>
+      <a href="docs/template-sap-grc.md">→ template-sap-grc.md</a>
+    </div>
+    <div class="doc-card">
+      <h4>Template de extração — Salesforce</h4>
+      <p>Procedure para Users + Permission Sets e Setup Audit Trail. Integração com ITSM para evidência de TicketID.</p>
+      <a href="docs/template-salesforce.md">→ template-salesforce.md</a>
+    </div>
+    <div class="doc-card">
+      <h4>Template de extração — TOTVS Protheus</h4>
+      <p>Queries SQL para SYS_USR e dicionário ADS. Matriz de conflitos SoD manual. Considerações LGPD para ambientes de ERP nacional.</p>
+      <a href="docs/template-totvs.md">→ template-totvs.md</a>
+    </div>
+  </div>
+
+  <div class="section-label">Dados de exemplo</div>
+  <div class="samples-wrap">
+    <p>Arquivos de exemplo para uso com o dashboard e os scripts de conversão. Todos os dados são fictícios e gerados exclusivamente para fins de teste e demonstração.</p>
+    <div class="samples-links">
+      <a href="samples/cycles.json" class="sample-link">cycles.json</a>
+      <a href="samples/metrics.csv" class="sample-link">metrics.csv</a>
+      <a href="samples/sap/sap_ara_violations.csv" class="sample-link">sap_ara_violations.csv</a>
+      <a href="samples/sap/sap_suim_users.csv" class="sample-link">sap_suim_users.csv</a>
+      <a href="samples/sap/sap_eam_firefighter.csv" class="sample-link">sap_eam_firefighter.csv</a>
+      <a href="samples/salesforce/sf_users_profiles.csv" class="sample-link">sf_users_profiles.csv</a>
+      <a href="samples/salesforce/sf_audit_trail.csv" class="sample-link">sf_audit_trail.csv</a>
+      <a href="samples/totvs/totvs_sys_usr.csv" class="sample-link">totvs_sys_usr.csv</a>
+      <a href="samples/totvs/totvs_sod_conflicts.csv" class="sample-link">totvs_sod_conflicts.csv</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-author">
+      <strong>Gilberto Gonçalves dos Santos Filho</strong>
+      Analista de Governança de Identidades — IAM · PAM · GRC
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="https://linkedin.com/in/gilberto-filho-4430a3184">LinkedIn</a>
+      <a class="footer-link" href="https://github.com/gilbertocrv">GitHub</a>
+      <a class="footer-link" href="https://github.com/gilbertocrv/iso27001-iam-governance">← Série 2</a>
+      <a class="footer-link" href="https://github.com/gilbertocrv/iam-operational-cycle-toolkit">← Ciclo S3</a>
+    </div>
+    <p class="footer-note">Conteúdo educacional independente baseado em normas públicas. Todo o processamento ocorre localmente no navegador — nenhum dado é enviado a servidores externos. Não substitui consultoria técnica ou jurídica especializada.</p>
+  </div>
+
+</main>
+</body>
+</html>

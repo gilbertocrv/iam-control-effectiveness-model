@@ -1,0 +1,11 @@
+Date,Action,Section,CreatedByUsername,SourceIp,Display,TicketID
+2026-03-20 14:32,userModified,Users,thiago.alves@acme.com,10.0.1.5,Changed profile of pedro.costa to System Administrator,TKT-2026-0342
+2026-03-19 09:15,permSetAssigned,Permission Sets,thiago.alves@acme.com,10.0.1.5,Assigned DataExport to carla.dias@acme.com,
+2026-03-18 16:00,userUnlocked,Users,thiago.alves@acme.com,10.0.1.5,Unlocked user joao.silva@acme.com,TKT-2026-0330
+2026-03-15 11:20,profileCreated,Profiles,thiago.alves@acme.com,10.0.1.5,Created profile Custom_Finance_Manager,TKT-2026-0315
+2026-03-10 08:45,permSetAssigned,Permission Sets,maria.santos@acme.com,10.0.1.8,Assigned Admin_Lite to carla.dias@acme.com,
+2026-03-05 17:30,sessionSettingsModified,Security,maria.santos@acme.com,10.0.1.8,Changed session timeout to 2 hours,TKT-2026-0298
+2026-02-28 10:00,mfaPolicyModified,Security,maria.santos@acme.com,10.0.1.8,Enabled MFA requirement for profile Standard User,TKT-2026-0275
+2026-02-20 14:15,userCreated,Users,thiago.alves@acme.com,10.0.1.5,Created user novo.usuario@acme.com,TKT-2026-0260
+2026-02-15 09:30,permSetRevoked,Permission Sets,thiago.alves@acme.com,10.0.1.5,Revoked Finance_View from fernanda.lima@acme.com,TKT-2026-0251
+2026-01-30 16:45,passwordPolicyModified,Security,maria.santos@acme.com,10.0.1.8,Changed minimum password length to 14,TKT-2026-0220
