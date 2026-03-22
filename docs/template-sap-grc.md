@@ -1,9 +1,14 @@
+> **Este projeto implementa um modelo de mensuração de efetividade de controles IAM baseado em evidência.**
+> Este documento descreve um exemplo de conversão para a plataforma SAP-GRC. O modelo é agnóstico — qualquer plataforma que gere o formato `control, metric, value, unit, cycle_id, cycle_date, source` é compatível.
+
+---
+
 # Template de Extração — SAP GRC (Access Control)
 
 **Plataforma:** SAP GRC 10.x / 12.x  
 **Módulos:** ARA (Access Risk Analysis) · EAM (Emergency Access Management) · SUIM  
 **Controles ISO:** 5.3 · 5.15 · 5.18 · 5.33 · 8.2 · 8.3  
-**Script de conversão:** `scripts/sap_to_metrics.py`
+**Exemplo de conversão:** `scripts/sap_to_metrics.py`
 
 ---
 
@@ -48,7 +53,7 @@
 | Mitigation Owner | MitigationOwner | Responsável pela mitigação |
 | Status | Status | Open / Mitigated |
 
-> **Nota:** Adapte os cabeçalhos do export SAP para corresponder à coluna do template antes de executar o script. O script aceita variações menores (case-insensitive para `RiskLevel` e `Status`).
+> **Nota:** Adapte os cabeçalhos do export SAP para corresponder à coluna do template antes de executar o script. O exemplo aceita variações menores (case-insensitive para `RiskLevel` e `Status`).
 
 ---
 
@@ -119,7 +124,7 @@
 
 ---
 
-## Execução do script
+## Execução do exemplo de conversão
 
 ```bash
 # Converter todos os arquivos SAP de uma vez
@@ -144,7 +149,7 @@ python scripts/sap_to_metrics.py \
 
 ## Mapeamento de métricas
 
-| Métrica do dashboard | Fonte SAP | Cálculo |
+| Métrica do modelo | Fonte SAP | Cálculo |
 |---|---|---|
 | `conflicts_total` | ARA | Total de linhas no relatório de violações |
 | `conflicts_critical` | ARA | Linhas com `RiskLevel` = Critical ou High |
@@ -166,7 +171,7 @@ python scripts/sap_to_metrics.py \
 Para cada extração, registre no manifesto:
 - Data e responsável pela extração
 - Transação utilizada e parâmetros aplicados
-- Hash SHA-1 do arquivo exportado (gerado automaticamente pelo dashboard)
+- Hash SHA-1 do arquivo exportado (gerado automaticamente pelo modelo)
 - Período de referência do relatório
 
 *Baseado em normas públicas. Não inclui configurações ou dados de sistemas reais.*

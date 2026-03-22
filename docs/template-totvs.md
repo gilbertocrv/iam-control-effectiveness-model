@@ -1,9 +1,14 @@
+> **Este projeto implementa um modelo de mensuração de efetividade de controles IAM baseado em evidência.**
+> Este documento descreve um exemplo de conversão para a plataforma TOTVS. O modelo é agnóstico — qualquer plataforma que gere o formato `control, metric, value, unit, cycle_id, cycle_date, source` é compatível.
+
+---
+
 # Template de Extração — TOTVS Protheus
 
 **Plataforma:** TOTVS Protheus 12.x (SigaCFG + módulos integrados)  
 **Fontes:** Configurador (SIGACFG) · Tabelas SYS_USR / SIGAPBF / ADS · Logs USR_LSTLOG  
 **Controles ISO:** 5.3 · 5.15 · 8.2 · 8.3  
-**Script de conversão:** `scripts/totvs_to_metrics.py`  
+**Exemplo de conversão:** `scripts/totvs_to_metrics.py`  
 **Foco regulatório:** LGPD · Resolução BACEN · TCU (ambientes de auditoria pública)
 
 ---
@@ -177,7 +182,7 @@ ORDER BY
 
 ---
 
-## Execução do script
+## Execução do exemplo de conversão
 
 ```bash
 # Converter usuários + conflitos TOTVS
@@ -202,7 +207,7 @@ python scripts/totvs_to_metrics.py \
 
 ## Mapeamento de métricas
 
-| Métrica do dashboard | Fonte TOTVS | Cálculo |
+| Métrica do modelo | Fonte TOTVS | Cálculo |
 |---|---|---|
 | `access_via_group_pct` | SYS_USR | `Usuários com USR_GROUP / Total × 100` |
 | `direct_access_pct` | SYS_USR | `Usuários sem grupo / Total × 100` |
@@ -222,7 +227,7 @@ Em ambientes sujeitos à LGPD, o TOTVS Protheus frequentemente contém dados pes
 
 - Utilize apenas os campos mínimos necessários (minimização de dados — LGPD Art. 6º, IV)
 - Não exporte campos como CPF, endereço ou dados de saúde nas extrações de auditoria IAM
-- Registre a finalidade da extração no manifesto de auditoria do dashboard
+- Registre a finalidade da extração no manifesto de auditoria do modelo
 - Assegure que os arquivos CSV gerados sejam armazenados em local com controle de acesso adequado
 
 *Baseado em documentação pública TOTVS. Não inclui configurações ou dados de sistemas reais.*

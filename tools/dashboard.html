@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IAM Governance Dashboard | Métricas e Decisão</title>
+<title>IAM Control Effectiveness Model | Mensuração e Decisão</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -182,24 +182,28 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
 <body>
 
 <div class="breadcrumb">
-  <a href="https://github.com/gilbertocrv/iso27001-iam-governance">ISO27001-IAM-GOVERNANCE</a><span>/</span>
-  <a href="../index.html">IAM-GOVERNANCE-DASHBOARD</a><span>/</span>
-  DASHBOARD
+  <a href="https://github.com/gilbertocrv">gilbertocrv</a><span>/</span>
+  <a href="https://github.com/gilbertocrv/iso27001-iam-governance">iso27001-iam-governance</a><span>/</span>
+  <a href="../index.html">iam-control-effectiveness-model</a><span>/</span>
+  dashboard
 </div>
 
 <header>
   <div class="header-left">
-    <h1>IAM_GOVERNANCE_DASHBOARD</h1>
-    <div class="sub">ISO/IEC 27001:2022 + LGPD · v2.0 · gilbertocrv</div>
+    <h1>IAM_CONTROL_EFFECTIVENESS_MODEL</h1>
+    <div class="sub">ISO/IEC 27001:2022 + LGPD · modelo de mensuração v2.0 · gilbertocrv</div>
   </div>
   <div class="header-actions">
-    <button class="btn" onclick="toggleImport()">⊕ Importar dados</button>
+    <button class="btn" onclick="toggleImport()">⊕ Ingestão de evidência</button>
     <button class="btn btn-primary" onclick="exportSnapshot()">↓ Export JSON</button>
   </div>
 </header>
 
 <main>
-  <a href="../index.html" class="back-link">← Voltar ao índice</a>
+<div style="background:#003366;color:rgba(255,255,255,.75);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:10px 30px;border-bottom:2px solid #c8922a;">
+  Este projeto implementa um modelo de mensuração de efetividade de controles IAM baseado em evidência.
+</div>
+  <a href="../index.html" class="back-link">← Voltar ao modelo</a>
 
   <!-- IMPORT -->
   <div class="import-panel" id="importPanel">
@@ -209,14 +213,14 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
     </div>
     <div class="import-body" id="importBody">
       <div class="import-tabs">
-        <button class="import-tab active" onclick="switchTab('json')" id="tab-json">JSON — ciclos</button>
-        <button class="import-tab" onclick="switchTab('csv')" id="tab-csv">CSV — métricas</button>
+        <button class="import-tab active" onclick="switchTab('json')" id="tab-json">JSON — ciclos de evidência</button>
+        <button class="import-tab" onclick="switchTab('csv')" id="tab-csv">CSV — métricas normalizadas</button>
       </div>
       <div id="json-body">
         <div class="drop-zone" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event,'json')">
           <input type="file" accept=".json" onchange="handleFile(this,'json')">
           <div class="drop-label">Arraste <span>cycles.json</span> ou clique para selecionar<br>
-            <span style="color:var(--gray);font-size:10px;">Compatível com iam-operational-cycle-toolkit · iam-risk-engineering-toolkit</span>
+            <span style="color:var(--gray);font-size:10px;">Compatível com agnóstico de plataforma — qualquer sistema compatível</span>
           </div>
         </div>
       </div>
@@ -229,10 +233,10 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
         </div>
       </div>
       <div class="trace-log" id="traceLog">
-        <div class="te"><span class="tok">[SISTEMA]</span> dashboard v2.0 inicializado — aguardando importação</div>
+        <div class="te"><span class="tok">[SISTEMA]</span> modelo v2.0 inicializado — aguardando ingestão de evidência</div>
       </div>
       <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
-        <button class="btn-sm" onclick="loadSample()">Carregar dados de exemplo</button>
+        <button class="btn-sm" onclick="loadSample()">Carregar evidências de exemplo</button>
         <button class="btn-sm" style="color:var(--red);border-color:rgba(192,57,43,.3);" onclick="clearData()">✕ Limpar dados</button>
       </div>
     </div>
@@ -240,8 +244,8 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
 
   <!-- EMPTY STATE -->
   <div class="empty-state" id="emptyState">
-    <div class="empty-title">// SEM DADOS CARREGADOS</div>
-    <div class="empty-sub">Importe um arquivo JSON ou CSV para visualizar as métricas.<br>Use "Carregar dados de exemplo" para explorar o dashboard com dados fictícios.</div>
+    <div class="empty-title">// SEM EVIDÊNCIA CARREGADA</div>
+    <div class="empty-sub">Ingira evidência via JSON ou CSV para iniciar a mensuração.<br>Use "Carregar evidências de exemplo" para explorar o dashboard com dados fictícios.</div>
   </div>
 
   <!-- DASHBOARD CONTENT -->
@@ -255,31 +259,31 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
       <span class="cycle-meta" id="cycleMeta"></span>
     </div>
 
-    <div class="section-label">Visão executiva</div>
+    <div class="section-label">Visão executiva do ciclo</div>
     <div class="overview-grid" id="overviewGrid"></div>
 
-    <div class="section-label">Score de efetividade</div>
+    <div class="section-label">Score de efetividade por controle ISO</div>
     <div class="score-grid">
       <div class="score-card" id="scoreMaster"></div>
       <div class="score-card" id="scoreBreakdown"></div>
     </div>
 
-    <div class="section-label">Evolução histórica</div>
+    <div class="section-label">Evolução histórica — mensuração por ciclo</div>
     <div class="trend-card">
       <div class="trend-header">
-        <span style="font-size:11px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;">Score por dimensão — todos os ciclos</span>
+        <span style="font-size:11px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;">Mensuração de efetividade — evolução por ciclo</span>
         <span style="font-size:10px;font-family:var(--mono);color:var(--gray);" id="trendCount"></span>
       </div>
       <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
     </div>
 
-    <div class="section-label">Métricas por controle ISO</div>
+    <div class="section-label">Dimensões mensuradas — controles ISO 27001</div>
     <div class="controls-grid" id="controlsGrid"></div>
 
-    <div class="section-label">Avaliação de risco — ISO 27001:2022 + LGPD</div>
+    <div class="section-label">Avaliação de risco e decisão — ISO 27001:2022 + LGPD</div>
     <div class="risk-panel" id="riskPanel" style="display:none;">
       <div class="risk-header">
-        <span style="font-size:11px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;">Achados e decisões semi-automáticas</span>
+        <span style="font-size:11px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;">Achados por controle ISO — decisão com justificativa do analista</span>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button class="btn-sm" onclick="exportRiskCSV()">↓ Decisões CSV</button>
           <button class="btn-sm" onclick="exportRiskJSON()">↓ Decisões JSON</button>
@@ -287,7 +291,7 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
       </div>
       <div class="risk-summary-bar" id="riskBar"></div>
       <div class="filter-bar" id="filterBar">
-        <span class="filter-label">Filtrar:</span>
+        <span class="filter-label">Filtrar achados:</span>
         <button class="import-tab active" id="f-ALL"       onclick="filterRisk('ALL')">Todos</button>
         <button class="import-tab"        id="f-REMEDIATE" onclick="filterRisk('REMEDIATE')">Remediate</button>
         <button class="import-tab"        id="f-ESCALATE"  onclick="filterRisk('ESCALATE')">Escalate</button>
@@ -299,11 +303,11 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
       <div id="findingsContainer"></div>
     </div>
 
-    <div class="section-label">Manifesto de auditoria</div>
+    <div class="section-label">Manifesto de ingestão — rastreabilidade</div>
     <div class="manifest-card">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-        <span style="font-size:11px;font-family:var(--mono);color:var(--gray);">Rastreabilidade de cada importação — hash SHA-1 por arquivo</span>
-        <button class="btn-sm" onclick="exportManifest()">↓ Export manifesto CSV</button>
+        <span style="font-size:11px;font-family:var(--mono);color:var(--gray);">Rastreabilidade de cada ingestão — hash SHA-1 por arquivo</span>
+        <button class="btn-sm" onclick="exportManifest()">↓ Export manifesto de ingestão</button>
       </div>
       <table class="manifest-table">
         <thead><tr><th>Timestamp</th><th>Arquivo</th><th>Tipo</th><th>Ciclos</th><th>Hash SHA-1</th></tr></thead>
@@ -311,7 +315,7 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
       </table>
     </div>
 
-    <div class="section-label">Exportações</div>
+    <div class="section-label">Evidências exportáveis</div>
     <div class="export-section">
       <div class="export-grid">
         <div class="export-item" onclick="exportSnapshot()">
@@ -319,7 +323,7 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
           <div class="export-item-desc">Compatível com iam-operational-cycle-toolkit</div>
         </div>
         <div class="export-item" onclick="exportCsvMetrics()">
-          <div class="export-item-title">↓ CSV — métricas por controle</div>
+          <div class="export-item-title">↓ CSV — métricas normalizadas por controle</div>
           <div class="export-item-desc">control · metric · value · cycle_id · source</div>
         </div>
         <div class="export-item" onclick="exportHistory()">
@@ -347,7 +351,7 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 // ═══════════════════════════════════════════
-// RISK ENGINE v2.0 — ISO/IEC 27001:2022 + LGPD
+// MOTOR DE AVALIAÇÃO v2.0 — ISO/IEC 27001:2022 + LGPD
 // Regras documentadas em: ../docs/risk-model.md
 // ═══════════════════════════════════════════
 const EV = "2.0";
@@ -638,10 +642,10 @@ function renderScore(c){
   const ctrl=c.controls||{};
   const dims=[{n:"Estrutura RBAC",k:"rbac"},{n:"Criticidade PAM",k:"pam"},{n:"Risco SoD",k:"sod"},{n:"Governança Rev.",k:"review"},{n:"Auditabilidade",k:"evidence"}];
   document.getElementById("scoreMaster").innerHTML=`
-    <div class="score-card-label">Control Effectiveness Score</div>
+    <div class="score-card-label">Score de efetividade de controles</div>
     <div><span class="score-big" style="color:${scoreCol(s)}">${s.toFixed(1)}</span><span class="score-denom"> / 10</span></div>
     <div style="margin-top:10px;"><span class="badge ${badgeCls(s)}">${badgeLbl(s)}</span></div>
-    <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--gray);margin-top:14px;">ISO 27001:2022 · 9.1 — Monitoring & Measurement</div>
+    <div style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--gray);margin-top:14px;">ISO/IEC 27001:2022 · Cláusula 9.1 — Mensuração e avaliação</div>
   `;
   document.getElementById("scoreBreakdown").innerHTML=`
     <div class="score-card-label">Score por dimensão</div>
@@ -652,31 +656,31 @@ function renderControls(c){
   const ctrl=c.controls||{};
   const srcs=inferSrc(c);
   const cards=[
-    {t:"Estrutura — RBAC Quality",k:"rbac",r:"5.15 · 8.3",rows:[
+    {t:"Estrutura — qualidade RBAC",k:"rbac",r:"5.15 · 8.3",rows:[
       {l:"Acesso via grupo",v:ctrl.rbac?.access_via_group_pct,u:"%",cls:ctrl.rbac?.access_via_group_pct>=80?"mr-good":"mr-warn"},
       {l:"Acesso direto",v:ctrl.rbac?.direct_access_pct,u:"%",cls:ctrl.rbac?.direct_access_pct>25?"mr-warn":""},
       {l:"Grupos sem owner",v:ctrl.rbac?.groups_without_owner,u:"",cls:ctrl.rbac?.groups_without_owner>10?"mr-bad":""},
       {l:"Usuários c/ múltiplas roles",v:ctrl.rbac?.users_multiple_roles_pct,u:"%",cls:ctrl.rbac?.users_multiple_roles_pct>30?"mr-warn":""},
     ]},
-    {t:"Criticidade — Privileged Access",k:"pam",r:"8.2",rows:[
+    {t:"Criticidade — acesso privilegiado",k:"pam",r:"8.2",rows:[
       {l:"Contas privilegiadas",v:ctrl.pam?.privileged_accounts,u:"",cls:""},
       {l:"Cobertura MFA",v:ctrl.pam?.mfa_coverage_pct,u:"%",cls:ctrl.pam?.mfa_coverage_pct<90?"mr-warn":"mr-good"},
       {l:"Contas inativas >30d",v:ctrl.pam?.inactive_accounts_pct,u:"%",cls:ctrl.pam?.inactive_accounts_pct>10?"mr-bad":""},
       {l:"Service principals críticos",v:ctrl.pam?.critical_service_principals,u:"",cls:"mr-warn"},
     ]},
-    {t:"Risco — Segregation of Duties",k:"sod",r:"5.3",rows:[
+    {t:"Risco — segregação de funções",k:"sod",r:"5.3",rows:[
       {l:"Conflitos totais",v:ctrl.sod?.conflicts_total,u:"",cls:""},
       {l:"Conflitos críticos",v:ctrl.sod?.conflicts_critical,u:"",cls:ctrl.sod?.conflicts_critical>0?"mr-bad":"mr-good"},
       {l:"% não tratados",v:ctrl.sod?.untreated_pct,u:"%",cls:ctrl.sod?.untreated_pct>20?"mr-bad":"mr-warn"},
       {l:"Tempo médio resolução",v:ctrl.sod?.avg_resolution_days,u:" dias",cls:ctrl.sod?.avg_resolution_days>15?"mr-warn":""},
     ]},
-    {t:"Governança — Access Review",k:"review",r:"5.18",rows:[
+    {t:"Governança — revisão de acessos",k:"review",r:"5.18",rows:[
       {l:"Revisões concluídas",v:ctrl.review?.reviews_completed_pct,u:"%",cls:ctrl.review?.reviews_completed_pct>=80?"mr-good":"mr-warn"},
       {l:"Fora do prazo",v:ctrl.review?.reviews_overdue_pct,u:"%",cls:ctrl.review?.reviews_overdue_pct>15?"mr-bad":""},
       {l:"Taxa de revogação",v:ctrl.review?.revocation_rate_pct,u:"%",cls:""},
       {l:"Taxa de manutenção",v:ctrl.review?.maintenance_rate_pct,u:"%",cls:""},
     ]},
-    {t:"Auditabilidade — Evidence",k:"evidence",r:"5.33",rows:[
+    {t:"Auditabilidade — evidência",k:"evidence",r:"5.33",rows:[
       {l:"Decisões com evidência",v:ctrl.evidence?.decisions_with_evidence_pct,u:"%",cls:ctrl.evidence?.decisions_with_evidence_pct>=90?"mr-good":"mr-warn"},
       {l:"Exceções documentadas",v:ctrl.evidence?.exceptions_documented_pct,u:"%",cls:ctrl.evidence?.exceptions_documented_pct<70?"mr-warn":"mr-good"},
       {l:"Registros completos",v:ctrl.evidence?.complete_records_pct,u:"%",cls:ctrl.evidence?.complete_records_pct>=85?"mr-good":"mr-warn"},
@@ -913,7 +917,7 @@ function exportRiskCSV(){
 }
 function exportRiskJSON(){
   if(!findings.length)return;
-  dl(`iam-risk-${findings[0]?.cycle_id}-${Date.now()}.json`,JSON.stringify({_meta:{schema:"iam-risk-decision/1.0",generated_at:new Date().toISOString(),engine_version:EV,normative_refs:["ISO/IEC 27001:2022","LGPD Lei 13.709/2018"]},summary:riskSum,manifest_ref:manifest.slice(-5),findings},null,2),"application/json");
+  dl(`iam-risk-${findings[0]?.cycle_id}-${Date.now()}.json`,JSON.stringify({_meta:{schema:"iam-risk-decision/1.0",generated_at:new Date().toISOString(),model_version:EV,normative_refs:["ISO/IEC 27001:2022","LGPD Lei 13.709/2018"]},summary:riskSum,manifest_ref:manifest.slice(-5),findings},null,2),"application/json");
   log(`export JSON decisões: ${findings.length} achados`,"ok");
 }
 function exportAuditReport(){
@@ -948,7 +952,7 @@ td{padding:6px 10px;border-bottom:1px solid #d1d9e4;}tr:hover td{background:#f4f
 .b-alto{background:#fdf0ef;color:#c0392b;}.b-medio{background:#fff8ed;color:#a06400;}.b-baixo{background:#e8f5ee;color:#1a7a4a;}.b-critical{background:#fdf0ef;color:#8b0000;}
 footer{margin-top:40px;font-size:10px;color:#888;border-top:1px solid #d1d9e4;padding-top:12px;}</style>
 </head><body>
-<h1>IAM Governance — Relatório de Auditoria</h1>
+<h1>IAM Control Effectiveness Model — Relatório de Auditoria</h1>
 <div class="meta">Ciclo: <b>${c.cycle_id}</b> · Data: ${c.cycle_date||"—"} · Gerado em: ${new Date().toISOString()} · Fonte: ${c.source_file||"—"} · ISO/IEC 27001:2022 + LGPD Lei 13.709/2018 · v${EV}</div>
 <div class="meta" style="background:#e8f5ee;border-left:3px solid #1a7a4a;color:#1a2340;">
   <strong>Cadeia de evidência:</strong> ${confirmedCount}/${totalCount} achados confirmados pelo analista · Decisões persistidas em: ${rd._persisted_at||"—"} · risk_decisions incluído no ciclo JSON
@@ -977,13 +981,13 @@ ${rRows}</table>
 <table><tr><th>Timestamp</th><th>Arquivo</th><th>Ciclos</th><th>Hash SHA-1</th></tr>
 ${manifest.map(m=>`<tr><td>${m.timestamp}</td><td>${m.filename}</td><td>${m.cycles_imported}</td><td style="font-family:monospace;color:#5b2d8e;">${m.hash}</td></tr>`).join("")}
 </table>
-<footer>IAM Governance Dashboard v${EV} · Gilberto Gonçalves dos Santos Filho · gilbertocrv · ISO/IEC 27001:2022 · LGPD Lei 13.709/2018 · Conteúdo educacional — não substitui consultoria especializada.</footer>
+<footer>IAM Control Effectiveness Model v${EV} · Gilberto Gonçalves dos Santos Filho · gilbertocrv · ISO/IEC 27001:2022 · LGPD Lei 13.709/2018 · Conteúdo educacional — não substitui consultoria especializada.</footer>
 </body></html>`;
   dl(`iam-audit-report-${c.cycle_id}-${Date.now()}.html`,html,"text/html");
   log(`export HTML relatório auditor: ${c.cycle_id}`,"ok");
 }
 
-log("aguardando dados — use \"Carregar dados de exemplo\" para explorar");
+log("aguardando dados — use \"Carregar evidências de exemplo\" para explorar");
 </script>
 </body>
 </html>

@@ -1,9 +1,14 @@
+> **Este projeto implementa um modelo de mensuração de efetividade de controles IAM baseado em evidência.**
+> Este documento descreve um exemplo de conversão para a plataforma SALESFORCE. O modelo é agnóstico — qualquer plataforma que gere o formato `control, metric, value, unit, cycle_id, cycle_date, source` é compatível.
+
+---
+
 # Template de Extração — Salesforce
 
 **Plataforma:** Salesforce (Sales Cloud · Service Cloud · Platform)  
 **Fontes:** Reports Builder · Setup Audit Trail · Security Health Check  
 **Controles ISO:** 5.15 · 5.33 · 8.2 · 8.3  
-**Script de conversão:** `scripts/salesforce_to_metrics.py`
+**Exemplo de conversão:** `scripts/salesforce_to_metrics.py`
 
 ---
 
@@ -82,7 +87,7 @@
 | Display | Display | Descrição da alteração |
 | *(campo customizado)* | TicketID | ID do chamado (ITSM) — campo custom ou padrão ITIL |
 
-> **Integração com ITSM:** O campo `TicketID` não existe nativamente no Salesforce Audit Trail. Para ambientes com controle de evidência, recomenda-se padronizar o campo **Display** incluindo o número do chamado no formato `[TKT-XXXX]`, ou integrar o Audit Trail com a ferramenta ITSM via Flow/API. O script identifica tickets pelo padrão `TKT-XXXX` ou campo dedicado.
+> **Integração com ITSM:** O campo `TicketID` não existe nativamente no Salesforce Audit Trail. Para ambientes com controle de evidência, recomenda-se padronizar o campo **Display** incluindo o número do chamado no formato `[TKT-XXXX]`, ou integrar o Audit Trail com a ferramenta ITSM via Flow/API. O exemplo identifica tickets pelo padrão `TKT-XXXX` ou campo dedicado.
 
 ### Ações classificadas como críticas (impactam `exceptions_documented_pct`)
 
@@ -101,14 +106,14 @@
 ## 3. Security Health Check (complementar)
 
 **Caminho:** Setup → Security → Health Check  
-**Uso:** Validação complementar — não é input direto do script  
+**Uso:** Validação complementar — não é input direto do exemplo  
 **Referência:** Controles 5.15 · 8.2 · 8.5
 
-O Security Health Check fornece um score consolidado de configuração de segurança. Utilize-o como evidência qualitativa complementar ao dashboard — registre o score geral e os itens em status "Meets Recommended Value" vs "Does Not Meet".
+O Security Health Check fornece um score consolidado de configuração de segurança. Utilize-o como evidência qualitativa complementar ao modelo — registre o score geral e os itens em status "Meets Recommended Value" vs "Does Not Meet".
 
 ---
 
-## Execução do script
+## Execução do exemplo de conversão
 
 ```bash
 # Converter usuários + audit trail
@@ -132,7 +137,7 @@ python scripts/salesforce_to_metrics.py \
 
 ## Mapeamento de métricas
 
-| Métrica do dashboard | Fonte Salesforce | Cálculo |
+| Métrica do modelo | Fonte Salesforce | Cálculo |
 |---|---|---|
 | `access_via_group_pct` | Users | `Usuários não-admin / Total × 100` |
 | `direct_access_pct` | Users | `System Administrators / Total × 100` |

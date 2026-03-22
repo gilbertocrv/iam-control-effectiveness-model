@@ -1,8 +1,12 @@
-# Modelo de dados — IAM Governance Dashboard
+> **Este projeto implementa um modelo de mensuração de efetividade de controles IAM baseado em evidência.**
+
+---
+
+# Modelo de dados — IAM Control Effectiveness Model
 
 ## Visão geral
 
-O dashboard aceita dois formatos de entrada e produz quatro formatos de saída. Todos os arquivos são texto puro (JSON ou CSV), processados localmente no navegador.
+O modelo aceita dois formatos de entrada e produz quatro formatos de saída. Todos os arquivos são texto puro (JSON ou CSV), processados localmente no navegador.
 
 ---
 
@@ -18,7 +22,7 @@ Array de objetos, um por ciclo de revisão.
     "cycle_id": "2026-Q1",          // identificador único do ciclo (string)
     "cycle_date": "2026-03-01",     // data de referência (YYYY-MM-DD)
     "source_file": "string",        // origem dos dados
-    "imported_at": "ISO-8601",      // timestamp de importação
+    "imported_at": "ISO-8601",      // timestamp de ingestão
     "controls": {
       "rbac": {
         "control_refs": ["5.15","8.3"],
@@ -117,7 +121,7 @@ Uma linha por métrica. Colunas obrigatórias:
 
 ## Cálculo automático de scores
 
-Se o campo `score` estiver ausente, o dashboard calcula automaticamente:
+Se o campo `score` estiver ausente, o modelo calcula automaticamente:
 
 | Dimensão | Fórmula |
 |---|---|
@@ -144,11 +148,11 @@ Se o campo `score` estiver ausente, o dashboard calcula automaticamente:
 
 ## Manifesto de auditoria
 
-Cada importação registra:
+Cada ingestão registra:
 
 | Campo | Descrição |
 |---|---|
-| `timestamp` | Data e hora UTC da importação |
+| `timestamp` | Data e hora UTC da ingestão |
 | `filename` | Nome do arquivo importado |
 | `type` | `json` ou `csv` |
 | `cycles_imported` | Total de ciclos no arquivo |

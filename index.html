@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IAM Governance Dashboard | Série 3 — Métricas</title>
+<title>IAM Control Effectiveness Model | Série 3 — Mensuração</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -130,14 +130,14 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
 <div class="breadcrumb">
   <a href="https://github.com/gilbertocrv">gilbertocrv</a><span>/</span>
   <a href="https://github.com/gilbertocrv/iso27001-iam-governance">iso27001-iam-governance</a><span>/</span>
-  iam-governance-dashboard
+  iam-control-effectiveness-model
 </div>
 
 <header>
   <div class="header-inner">
-    <div class="serie-badge">SÉRIE 3 · MÉTRICAS E DECISÃO</div>
-    <h1>IAM Governance <span>Dashboard</span></h1>
-    <p>Visualização de scores de efetividade, avaliação de risco com camada LGPD e suporte à decisão semi-automática. Importa dados de SAP GRC, Salesforce, TOTVS Protheus e Microsoft Entra ID. Exporta evidências auditáveis em JSON, CSV e HTML.</p>
+    <div class="serie-badge">SÉRIE 3 · MENSURAÇÃO DE CONTROLES</div>
+    <h1>IAM Control <span>Effectiveness Model</span></h1>
+    <p>Este projeto implementa um modelo de mensuração de efetividade de controles IAM baseado em evidência. Transforma dados técnicos de qualquer plataforma em indicadores de governança auditável — independente da tecnologia utilizada.</p>
     <div class="header-meta">
       <span class="meta-pill">ISO/IEC 27001:2022</span>
       <span class="meta-pill">LGPD Lei 13.709/2018</span>
@@ -149,6 +149,10 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
 </header>
 
 <main>
+  <div style="background:#003366;color:rgba(255,255,255,.75);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:14px 30px;letter-spacing:.01em;border-bottom:2px solid #c8922a;">
+    Este projeto implementa um modelo de mensuração de efetividade de controles IAM baseado em evidência.
+  </div>
+
 
   <div class="section-label">Contexto do projeto</div>
   <div class="serie-context">
@@ -163,18 +167,18 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
       <p>Ciclo completo de revisão de acessos — análise, decisão, registro e saída auditável. Valida <em>se o que foi definido está funcionando</em>.</p>
     </div>
     <div class="serie-card active">
-      <span class="serie-tag tag-active">→ SÉRIE 3 — MÉTRICAS</span>
-      <h3>Métricas e Decisão</h3>
-      <p>Scores de efetividade por controle, risco ISO + LGPD e decisão confirmada pelo analista. <em>Mostra os resultados</em> com rastreabilidade completa.</p>
+      <span class="serie-tag tag-active">→ SÉRIE 3 — MENSURAÇÃO</span>
+      <h3>Mensuração de Efetividade</h3>
+      <p>Mensuração de efetividade por controle, avaliação de risco ISO + LGPD e decisão rastreável do analista. <em>Fecha a cadeia de evidência</em>.</p>
     </div>
   </div>
 
-  <div class="section-label">Dashboard — ferramenta principal</div>
+  <div class="section-label">Modelo — mensuração de efetividade de controles IAM</div>
   <div class="tool-main">
     <div class="tool-main-info">
-      <span class="tool-step">FERRAMENTA PRINCIPAL</span>
-      <h2>IAM Governance Dashboard</h2>
-      <p>Importa dados de qualquer plataforma IAM (JSON ou CSV), calcula scores de efetividade por controle ISO, avalia risco com mapeamento LGPD e gera decisões semi-automáticas para confirmação do analista. Histórico de múltiplos ciclos com rastreabilidade de cada importação via hash SHA-1.</p>
+      <span class="tool-step">MODELO DE MENSURAÇÃO</span>
+      <h2>IAM Control Effectiveness Model</h2>
+      <p>Ingere evidência de qualquer plataforma IAM (JSON ou CSV), calcula scores de efetividade por controle ISO, avalia risco com mapeamento LGPD e gera decisões semi-automáticas para confirmação do analista. Histórico de múltiplos ciclos com rastreabilidade de cada ingestão via hash SHA-1.</p>
       <div class="ctrl-row">
         <span class="ctrl-tag">5.3</span><span class="ctrl-tag">5.15</span><span class="ctrl-tag">5.18</span>
         <span class="ctrl-tag">5.33</span><span class="ctrl-tag">8.2</span><span class="ctrl-tag">8.3</span>
@@ -184,25 +188,25 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
     </div>
     <div class="tool-main-features">
       <ul class="feature-list">
-        <li>Import JSON (cycles.json) e CSV (metrics.csv) com qualquer plataforma de origem</li>
+        <li>Ingestão de evidência via JSON (cycles.json) ou CSV (metrics.csv) — agnóstico de plataforma</li>
         <li>Score de efetividade por dimensão: RBAC · PAM · SoD · Review · Evidence</li>
-        <li>Motor de risco ISO 27001 — regras por threshold com LGPD trigger</li>
+        <li>Avaliação por motor de risco ISO 27001 — thresholds por controle com mapeamento LGPD</li>
         <li>Decisão sugerida (REMEDIATE / ESCALATE / MITIGATE / ACCEPT) confirmada pelo analista</li>
         <li>Gráfico de evolução histórica por ciclo</li>
-        <li>Badge de fonte por plataforma: SAP GRC · Salesforce · TOTVS · Entra ID</li>
+        <li>Rastreabilidade de origem por ingestão — plataforma registrada com hash SHA-1</li>
         <li>Manifesto de auditoria com hash SHA-1 por importação</li>
-        <li>Export: JSON snapshot · CSV métricas · JSON decisões · HTML relatório auditor</li>
+        <li>Export de evidência: JSON snapshot · CSV métricas · JSON decisões · HTML relatório auditável</li>
       </ul>
     </div>
   </div>
 
-  <div class="section-label">Conectores suportados</div>
+  <div class="section-label">Exemplos de conversão — agnóstico de plataforma</div>
   <div class="connectors-grid">
 
     <div class="connector-card">
-      <span class="connector-pill pill-entra">Microsoft Entra ID</span>
+      <span class="connector-pill pill-entra">Entra ID</span>
       <h3>Entra ID / Graph API</h3>
-      <p>Import direto via CSV nativo. Compatível com exports do iam-operational-cycle-toolkit (findings, evidence-register).</p>
+      <p>Ingestão direta via CSV. Compatível com evidências exportadas pelo iam-operational-cycle-toolkit.</p>
       <div class="connector-links">
         <a href="tools/dashboard.html" class="connector-link primary">Dashboard →</a>
         <a href="samples/metrics.csv" class="connector-link">Sample CSV</a>
@@ -212,7 +216,7 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
     <div class="connector-card">
       <span class="connector-pill pill-sap">SAP GRC</span>
       <h3>SAP GRC — ARA · SUIM · EAM</h3>
-      <p>ARA (violações SoD) · SUIM (usuários e perfis) · EAM Firefighter (acesso privilegiado). Script de conversão incluído.</p>
+      <p>Exemplo de conversão: ARA (violações SoD) · SUIM (usuários e perfis) · EAM Firefighter. Veja docs/template-sap-grc.md.</p>
       <div class="connector-links">
         <a href="scripts/sap_to_metrics.py" class="connector-link primary">Script →</a>
         <a href="docs/template-sap-grc.md" class="connector-link">Guia extração</a>
@@ -223,7 +227,7 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
     <div class="connector-card">
       <span class="connector-pill pill-sf">Salesforce</span>
       <h3>Salesforce — Users · Audit Trail</h3>
-      <p>Users + Permission Sets · Setup Audit Trail · Security Health Check. Script de conversão incluído.</p>
+      <p>Exemplo de conversão: Users + Permission Sets · Setup Audit Trail. Veja docs/template-salesforce.md.</p>
       <div class="connector-links">
         <a href="scripts/salesforce_to_metrics.py" class="connector-link primary">Script →</a>
         <a href="docs/template-salesforce.md" class="connector-link">Guia extração</a>
@@ -234,7 +238,7 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
     <div class="connector-card">
       <span class="connector-pill pill-totvs">TOTVS Protheus</span>
       <h3>TOTVS — SigaCFG · ADS SQL</h3>
-      <p>SYS_USR · SIGAPBF · Conflitos SoD via query SQL no dicionário ADS. Foco em conformidade com LGPD e legislação brasileira.</p>
+      <p>Exemplo de conversão: SYS_USR · SIGAPBF · conflitos SoD via SQL no dicionário ADS. Veja docs/template-totvs.md.</p>
       <div class="connector-links">
         <a href="scripts/totvs_to_metrics.py" class="connector-link primary">Script →</a>
         <a href="docs/template-totvs.md" class="connector-link">Guia extração</a>
@@ -253,82 +257,82 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
 
   </div>
 
-  <div class="section-label">Fluxo de dados</div>
+  <div class="section-label">Fluxo do modelo</div>
   <div class="flow-wrap">
-    <p style="font-size:13px;color:var(--gray);">Cada plataforma tem um script de conversão que normaliza os dados para o formato metrics.csv. O dashboard importa e gera evidências auditáveis com rastreabilidade completa.</p>
+    <p style="font-size:13px;color:var(--gray);">Fluxo único e consistente em todo o modelo — da extração à decisão auditável.</p>
     <div class="flow-steps">
       <div class="flow-step">
-        <div class="flow-step-num">EXTRAÇÃO</div>
-        <div class="flow-step-name">Plataforma</div>
-        <div class="flow-step-desc">SAP · SF · TOTVS · Entra</div>
+        <div class="flow-step-num">1 · EXTRAÇÃO</div>
+        <div class="flow-step-name">Qualquer sistema</div>
+        <div class="flow-step-desc">CSV · JSON · SQL</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-step">
-        <div class="flow-step-num">CONVERSÃO</div>
-        <div class="flow-step-name">Script Python</div>
-        <div class="flow-step-desc">*_to_metrics.py</div>
+        <div class="flow-step-num">2 · EVIDÊNCIA</div>
+        <div class="flow-step-name">Hash + normalização</div>
+        <div class="flow-step-desc">SHA-1 · metrics.csv</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-step">
-        <div class="flow-step-num">IMPORT</div>
-        <div class="flow-step-name">Dashboard</div>
-        <div class="flow-step-desc">JSON ou CSV</div>
+        <div class="flow-step-num">3 · MÉTRICA</div>
+        <div class="flow-step-name">Score por controle</div>
+        <div class="flow-step-desc">RBAC · PAM · SoD · Review · Evidence</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-step">
-        <div class="flow-step-num">ANÁLISE</div>
-        <div class="flow-step-name">Score + Risco</div>
-        <div class="flow-step-desc">ISO 27001 + LGPD</div>
+        <div class="flow-step-num">4 · AVALIAÇÃO</div>
+        <div class="flow-step-name">Risco ISO + LGPD</div>
+        <div class="flow-step-desc">Thresholds + achados</div>
       </div>
       <div class="flow-arrow">→</div>
       <div class="flow-step">
-        <div class="flow-step-num">SAÍDA</div>
-        <div class="flow-step-name">Evidências</div>
-        <div class="flow-step-desc">JSON · CSV · HTML</div>
+        <div class="flow-step-num">5 · DECISÃO</div>
+        <div class="flow-step-name">Analista confirma</div>
+        <div class="flow-step-desc">Persistida · rastreável</div>
       </div>
     </div>
   </div>
 
-  <div class="section-label">Exportações disponíveis</div>
+  <div class="section-label">Evidências exportáveis</div>
   <div class="exports-grid">
     <div class="export-card">
       <span class="export-tag">JSON</span>
-      <h4>Snapshot do ciclo atual</h4>
-      <p>Estrutura completa do ciclo com metadados de export. Compatível com iam-operational-cycle-toolkit.</p>
+      <h4>Snapshot do ciclo</h4>
+      <p>Estado completo do ciclo — scores, decisões e manifesto. Compatível com iam-operational-cycle-toolkit.</p>
     </div>
     <div class="export-card">
       <span class="export-tag">CSV</span>
-      <h4>Métricas por controle</h4>
+      <h4>Métricas por controle ISO</h4>
       <p>Uma linha por métrica: control · metric · value · unit · cycle_id · cycle_date · source.</p>
     </div>
     <div class="export-card">
       <span class="export-tag">JSON</span>
-      <h4>Histórico completo</h4>
-      <p>Todos os ciclos carregados com manifesto de importações. Para visão histórica e comparativa.</p>
+      <h4>Histórico de ciclos</h4>
+      <p>Todos os ciclos com manifesto de ingestão. Visão histórica de efetividade.</p>
     </div>
     <div class="export-card">
       <span class="export-tag">CSV</span>
       <h4>Decisões de risco</h4>
-      <p>Achados com risk_level, lgpd_article, decision, priority e nota do analista.</p>
+      <p>Achados com risco ISO, artigo LGPD, decisão e justificativa do analista.</p>
     </div>
     <div class="export-card">
       <span class="export-tag">JSON</span>
-      <h4>Decisões auditável</h4>
-      <p>Schema iam-risk-decision/1.0 com _meta, summary, manifest_ref e findings completos.</p>
+      <h4>Decisões — formato auditável</h4>
+      <p>Schema iam-risk-decision/1.0 — inclui manifesto de ingestão e cadeia de evidência completa.</p>
     </div>
     <div class="export-card">
       <span class="export-tag">HTML</span>
-      <h4>Relatório para auditor</h4>
-      <p>Documento autossuficiente com scores, risco ISO + LGPD, manifesto e decisões confirmadas.</p>
+      <h4>Relatório auditável</h4>
+      <p>Documento autossuficiente — scores, avaliação de risco, manifesto SHA-1 e decisões confirmadas.</p>
     </div>
   </div>
 
-  <div class="section-label">Camada de risco — ISO 27001 + LGPD</div>
+  <div class="section-label">Avaliação de risco — ISO 27001 + LGPD</div>
   <div class="lgpd-note">
     <span class="lgpd-note-icon">LGPD</span>
     <div>
       <p><strong>Modelo de risco documentado em docs/risk-model.md</strong>
-      O dashboard avalia cada métrica contra thresholds definidos por controle ISO e mapeia o impacto regulatório LGPD correspondente. Falhas críticas em SoD (5.3), PAM (8.2), revisão (5.18) e evidência (5.33) geram achados com artigo LGPD, tipo de risco regulatório e decisão sugerida. O analista confirma ou ajusta cada decisão antes do export — garantindo rastreabilidade da decisão humana sobre o risco identificado.</p>
+      O modelo avalia cada métrica contra thresholds definidos por controle ISO e mapeia o impacto regulatório LGPD correspondente. Falhas críticas em SoD (5.3), PAM (8.2), revisão (5.18) e evidência (5.33) geram achados com artigo LGPD, tipo de risco regulatório e decisão sugerida. O analista confirma ou ajusta cada decisão antes do export — garantindo rastreabilidade da decisão humana sobre o risco identificado.</p>
     </div>
   </div>
 
@@ -345,25 +349,25 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
       <a href="docs/data-model.md">→ data-model.md</a>
     </div>
     <div class="doc-card">
-      <h4>Template de extração — SAP GRC</h4>
-      <p>Procedimento para exportar violações ARA, usuários SUIM e log Firefighter EAM. Mapeamento campo a campo para o dashboard.</p>
+      <h4>Exemplo de conversão — SAP GRC</h4>
+      <p>Como extrair evidência do SAP GRC e normalizar para o formato do modelo. Mapeamento campo a campo.</p>
       <a href="docs/template-sap-grc.md">→ template-sap-grc.md</a>
     </div>
     <div class="doc-card">
-      <h4>Template de extração — Salesforce</h4>
-      <p>Procedure para Users + Permission Sets e Setup Audit Trail. Integração com ITSM para evidência de TicketID.</p>
+      <h4>Exemplo de conversão — Salesforce</h4>
+      <p>Como extrair evidência do Salesforce e normalizar para o formato do modelo.</p>
       <a href="docs/template-salesforce.md">→ template-salesforce.md</a>
     </div>
     <div class="doc-card">
-      <h4>Template de extração — TOTVS Protheus</h4>
-      <p>Queries SQL para SYS_USR e dicionário ADS. Matriz de conflitos SoD manual. Considerações LGPD para ambientes de ERP nacional.</p>
+      <h4>Exemplo de conversão — TOTVS Protheus</h4>
+      <p>Como extrair evidência do TOTVS Protheus via SQL e normalizar para o formato do modelo.</p>
       <a href="docs/template-totvs.md">→ template-totvs.md</a>
     </div>
   </div>
 
-  <div class="section-label">Dados de exemplo</div>
+  <div class="section-label">Evidências de exemplo</div>
   <div class="samples-wrap">
-    <p>Arquivos de exemplo para uso com o dashboard e os scripts de conversão. Todos os dados são fictícios e gerados exclusivamente para fins de teste e demonstração.</p>
+    <p>Evidências fictícias para explorar o fluxo completo do modelo. Todos os dados são fictícios — gerados exclusivamente para demonstração.</p>
     <div class="samples-links">
       <a href="samples/cycles.json" class="sample-link">cycles.json</a>
       <a href="samples/metrics.csv" class="sample-link">metrics.csv</a>
@@ -386,9 +390,9 @@ main{max-width:1100px;margin:0 auto;padding:40px 30px 70px}
       <a class="footer-link" href="https://linkedin.com/in/gilberto-filho-4430a3184">LinkedIn</a>
       <a class="footer-link" href="https://github.com/gilbertocrv">GitHub</a>
       <a class="footer-link" href="https://github.com/gilbertocrv/iso27001-iam-governance">← Série 2</a>
-      <a class="footer-link" href="https://github.com/gilbertocrv/iam-operational-cycle-toolkit">← Ciclo S3</a>
+      <a class="footer-link" href="https://github.com/gilbertocrv/iam-operational-cycle-toolkit">← Operação S3</a>
     </div>
-    <p class="footer-note">Conteúdo educacional independente baseado em normas públicas. Todo o processamento ocorre localmente no navegador — nenhum dado é enviado a servidores externos. Não substitui consultoria técnica ou jurídica especializada.</p>
+    <p class="footer-note">Conteúdo educacional independente baseado em normas públicas. Processamento 100% local — nenhum dado enviado a servidores externos. Não substitui consultoria técnica ou jurídica especializada.</p>
   </div>
 
 </main>

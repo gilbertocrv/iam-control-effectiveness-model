@@ -1,6 +1,10 @@
+> **Este projeto implementa um modelo de mensuração de efetividade de controles IAM baseado em evidência.**
+
+---
+
 # Modelo de Risco — ISO 27001:2022 + LGPD
 
-Este documento define as regras de interpretação de risco aplicadas pelo dashboard.  
+Este documento define as regras de interpretação de risco aplicadas pelo modelo.  
 A ISO/IEC 27001:2022 não prescreve scores ou thresholds — este modelo traduz a **intenção de cada controle** em critérios operacionais mensuráveis, combinados com o impacto regulatório da LGPD (Lei 13.709/2018).
 
 **Versão:** 1.0 · **Referência normativa:** ISO/IEC 27001:2022 Anexo A · LGPD Art. 6º, 46º, 48º, 52º
@@ -41,7 +45,7 @@ A ISO/IEC 27001:2022 não prescreve scores ou thresholds — este modelo traduz 
 
 ## 3. Regras de Decisão
 
-As regras abaixo são aplicadas automaticamente pelo dashboard para gerar uma **decisão sugerida**.  
+As regras abaixo são aplicadas automaticamente pelo modelo para gerar uma **decisão sugerida**.  
 O analista confirma, ajusta ou rejeita a sugestão antes do export.
 
 ### 3.1 Controle 5.3 — SoD
@@ -114,7 +118,7 @@ O analista confirma, ajusta ou rejeita a sugestão antes do export.
 
 ## 6. Combinação ISO + LGPD no export
 
-Cada métrica avaliada pelo dashboard gera um objeto de decisão com a seguinte estrutura:
+Cada métrica avaliada pelo modelo gera um objeto de decisão com a seguinte estrutura:
 
 ```json
 {
@@ -138,7 +142,7 @@ Cada métrica avaliada pelo dashboard gera um objeto de decisão com a seguinte 
 ```
 
 O campo `decision_confirmed: false` indica decisão sugerida aguardando confirmação do analista.  
-Após confirmação no dashboard, `decision_confirmed` passa para `true` e o campo `analyst_note` registra a justificativa.
+Após confirmação no modelo, `decision_confirmed` passa para `true` e o campo `analyst_note` registra a justificativa.
 
 ---
 
@@ -157,14 +161,14 @@ Não substitui análise jurídica ou consultoria especializada em proteção de 
 
 ## 7. Persistência da decisão no ciclo — cadeia de evidência
 
-Quando o analista confirma uma decisão no dashboard, ela é gravada diretamente no objeto de ciclo em memória, no campo `risk_decisions`. Isso garante que qualquer export posterior — snapshot JSON, histórico ou relatório HTML — carregue a decisão confirmada sem depender de uma sessão ativa.
+Quando o analista confirma uma decisão no modelo, ela é gravada diretamente no objeto de ciclo em memória, no campo `risk_decisions`. Isso garante que qualquer export posterior — snapshot JSON, histórico ou relatório HTML — carregue a decisão confirmada sem depender de uma sessão ativa.
 
 ### Estrutura persistida em `cycle.risk_decisions`
 
 ```json
 {
   "_persisted_at": "2026-03-31T14:22:00.000Z",
-  "engine_version": "2.0",
+  "model_version": "2.0",
   "normative_refs": ["ISO/IEC 27001:2022", "LGPD Lei 13.709/2018"],
   "confirmed_count": 8,
   "total_count": 11,
@@ -198,7 +202,7 @@ Quando o analista confirma uma decisão no dashboard, ela é gravada diretamente
 ```
 Extração (SAP/SF/TOTVS/Entra)
         ↓ hash SHA-1 no manifesto
-Import no dashboard
+Import no modelo
         ↓ motor de risco avalia automaticamente
 Decisão sugerida (REMEDIATE / ESCALATE / MITIGATE / ACCEPT)
         ↓ analista confirma + justificativa

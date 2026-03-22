@@ -1,27 +1,24 @@
-# iam-governance-dashboard
+# iam-control-effectiveness-model
 
-> **Este projeto implementa um modelo de mensuração de controles de IAM baseado na ISO/IEC 27001:2022.**
->
-> Não é uma ferramenta de IAM.
->
-> É uma camada de abstração que transforma dados técnicos em indicadores de governança auditável, independente da tecnologia utilizada.
+> **Este projeto implementa um modelo de mensuração de efetividade de controles IAM baseado em evidência.**
+
+Não é uma ferramenta de IAM.
+
+É uma camada de abstração que transforma dados técnicos em indicadores de governança auditável, independente da tecnologia utilizada.
 
 ---
 
-## Diferencial do modelo
-
-O dashboard não mede sistemas.
+## O modelo não mede sistemas
 
 Ele mede:
 
-- **qualidade da estrutura de acesso** — o acesso está organizado ou é um acúmulo sem governança?
-- **exposição ao risco** — onde estão as credenciais sem controle, os conflitos de função, os acessos não revisados?
-- **efetividade da governança** — as revisões acontecem? As decisões são registradas?
-- **capacidade de auditoria** — existe evidência rastreável do dado bruto à decisão humana?
+- **estrutura** — o acesso está organizado ou é um acúmulo sem governança?
+- **criticidade** — onde estão as credenciais sem controle, os privilégios sem revisão?
+- **risco** — quais conflitos de função estão ativos e sem tratamento?
+- **governança** — as revisões acontecem? As decisões são registradas?
+- **auditabilidade** — existe evidência rastreável do dado bruto à decisão humana?
 
-A fonte dos dados — Entra ID, SAP, Salesforce, TOTVS — é irrelevante.
-
-**O que importa é a evidência.**
+A fonte dos dados é irrelevante. **O que importa é a evidência.**
 
 ---
 
@@ -29,50 +26,54 @@ A fonte dos dados — Entra ID, SAP, Salesforce, TOTVS — é irrelevante.
 
 Este projeto demonstra que governança de identidades não depende da ferramenta utilizada.
 
-Depende da capacidade de:
+Depende da capacidade de estruturar acesso, identificar risco, gerar evidência e mensurar controle.
 
-- estruturar acesso
-- identificar risco
-- gerar evidência
-- mensurar controle
+Qualquer organização, com qualquer stack tecnológico, pode aplicar este modelo se conseguir expressar dados de acesso no formato:
 
-Qualquer organização, com qualquer stack tecnológico, pode aplicar este modelo se conseguir extrair dados de acesso em formato estruturado.
+```
+control, metric, value, unit, cycle_id, cycle_date, source
+```
+
+---
+
+## Fluxo único do modelo
+
+```
+Extração → Evidência → Métrica → Avaliação → Decisão
+```
+
+| Etapa | O que acontece |
+|---|---|
+| **Extração** | Dados de acesso exportados de qualquer sistema |
+| **Evidência** | Hash SHA-1 registrado — rastreabilidade garantida |
+| **Métrica** | Dados normalizados por controle ISO |
+| **Avaliação** | Motor de risco avalia por threshold — ISO 27001 + LGPD |
+| **Decisão** | Analista confirma com justificativa — persistida no ciclo |
+
+---
+
+## Dimensões mensuradas
+
+| Dimensão | Terminologia | O que é medido | Controles ISO |
+|---|---|---|---|
+| Estrutura | RBAC | Qualidade da organização de acessos por grupo e role | 5.15 · 8.3 |
+| Criticidade | PAM | Exposição por contas privilegiadas sem MFA ou sem revisão | 8.2 |
+| Risco | SoD | Conflitos de segregação de funções ativos e sem tratamento | 5.3 |
+| Governança | Review | Efetividade do ciclo de revisão de acessos | 5.18 |
+| Auditabilidade | Evidence | Capacidade de demonstrar conformidade com evidência rastreável | 5.33 |
 
 ---
 
 ## Camadas do projeto
 
 ```
-Camada 1 — Governança (ISO 27001)
-→ define o que deve ser controlado
-→ repositório: iso27001-iam-governance
-
-Camada 2 — Engenharia (RBAC · PAM · SoD)
-→ estrutura, criticidade e risco
-→ repositório: iam-risk-engineering-toolkit
-
-Camada 3 — Operação (ciclo de revisão)
-→ evidência e decisão
-→ repositório: iam-operational-cycle-toolkit
-
-Camada 4 — Métricas (este repositório)
-→ mensuração da efetividade dos controles
-→ repositório: iam-governance-dashboard
+Camada 1 — Governança    → define o que deve ser controlado
+Camada 2 — Engenharia    → estrutura, criticidade e risco
+Camada 3 — Operação      → evidência e decisão
+Camada 4 — Métricas      → mensuração da efetividade (este repositório)
 ```
 
-Cada camada produz artefatos que alimentam a próxima. O dashboard é a camada de saída — onde os dados se tornam indicadores e os indicadores se tornam decisão auditável.
-
----
-
-## O que este projeto entrega
-
-| Dimensão | O que é medido | Controles ISO |
-|---|---|---|
-| Estrutura RBAC | Qualidade da organização de acessos por grupo e role | 5.15 · 8.3 |
-| Criticidade PAM | Exposição por contas privilegiadas sem MFA ou sem revisão | 8.2 |
-| Risco SoD | Conflitos de segregação de funções ativos e sem tratamento | 5.3 |
-| Governança Review | Efetividade do ciclo de revisão de acessos | 5.18 |
-| Auditabilidade | Capacidade de demonstrar conformidade com evidência rastreável | 5.33 |
+Cada camada produz artefatos que alimentam a próxima. Este modelo é a camada de saída — onde os dados se tornam indicadores e os indicadores se tornam decisão auditável.
 
 ---
 
@@ -84,113 +85,45 @@ Falhas em SoD, PAM, revisão e evidência geram achados com artigo LGPD correspo
 
 ---
 
-## Conectores — nota conceitual importante
+## Exemplos de conversão — nota conceitual
 
-Os conectores (SAP GRC, Salesforce, TOTVS, Entra ID) **não fazem parte do core do projeto**.
+Os exemplos de conversão (SAP GRC, Salesforce, TOTVS, Entra ID) **não fazem parte do core do modelo**.
 
-Eles existem apenas como exemplos de como extrair evidência técnica de plataformas comuns e traduzi-la para o formato de métricas que o modelo entende.
+Existem apenas para demonstrar como extrair evidência técnica de plataformas comuns e traduzi-la para o formato que o modelo entende.
 
-O modelo é agnóstico. Funciona com qualquer fonte de dados que possa ser expressa como:
+O modelo é agnóstico. A plataforma de origem não importa.
+
+---
+
+## Cadeia de evidência
 
 ```
-control, metric, value, unit, cycle_id, cycle_date, source
+Extração → Hash SHA-1 → Ingestão → Avaliação → Decisão → Persistência → Relatório
 ```
 
-Se você consegue gerar esse CSV — de qualquer sistema — o dashboard processa, avalia e exporta evidência auditável.
+Cada export carrega o manifesto de ingestão (com hash), os scores por controle e as decisões confirmadas pelo analista. O documento resultante é autossuficiente para fins de auditoria.
 
 ---
 
 ## Estrutura do repositório
 
 ```
-iam-governance-dashboard/
+iam-control-effectiveness-model/
 │
-├── index.html                          # Página principal — visão geral e índice
-│
+├── index.html                    # Visão geral do modelo
 ├── tools/
-│   └── dashboard.html                  # Dashboard interativo — importação, análise e export
-│
-├── scripts/                            # Exemplos de conversão por plataforma
-│   ├── sap_to_metrics.py              # SAP GRC (ARA + SUIM + EAM) → metrics.csv
-│   ├── salesforce_to_metrics.py       # Salesforce (Users + Audit Trail) → metrics.csv
-│   └── totvs_to_metrics.py            # TOTVS Protheus (SYS_USR + ADS) → metrics.csv
-│
-├── samples/                            # Dados fictícios para explorar o modelo
-│   ├── cycles.json                    # 3 ciclos históricos de exemplo
-│   ├── metrics.csv                    # Métricas unificadas
-│   ├── sap/                           # Extracts SAP fictícios
-│   ├── salesforce/                    # Extracts Salesforce fictícios
-│   └── totvs/                         # Extracts TOTVS fictícios
-│
+│   └── dashboard.html            # Camada de visualização — ingestão, avaliação e export
 ├── docs/
-│   ├── risk-model.md                  # Modelo de risco — regras ISO + LGPD e thresholds
-│   ├── data-model.md                  # Especificação do formato JSON e CSV
-│   ├── template-sap-grc.md            # Exemplo de extração: SAP GRC
-│   ├── template-salesforce.md         # Exemplo de extração: Salesforce
-│   └── template-totvs.md             # Exemplo de extração: TOTVS Protheus
-│
-├── .github/
-│   └── workflows/
-│       └── convert-metrics.yml        # GitHub Actions — conversão automática no push
-│
-└── README.md
+│   ├── risk-model.md             # Modelo de risco — regras ISO + LGPD e thresholds
+│   ├── data-model.md             # Especificação do formato de evidência
+│   ├── template-sap-grc.md       # Exemplo de conversão: SAP GRC
+│   ├── template-salesforce.md    # Exemplo de conversão: Salesforce
+│   └── template-totvs.md         # Exemplo de conversão: TOTVS Protheus
+├── scripts/                      # Exemplos de conversão por plataforma
+├── samples/                      # Evidências fictícias para explorar o modelo
+└── .github/workflows/
+    └── convert-metrics.yml       # Automação de conversão no push
 ```
-
----
-
-## Como usar
-
-### Explorar o modelo
-Abra `index.html` no navegador e clique em **Abrir dashboard →**. Use "Carregar dados de exemplo" para explorar o fluxo completo com dados fictícios.
-
-### Alimentar com dados reais
-Qualquer sistema que exponha dados de acesso pode ser conectado. O caminho mais direto:
-
-1. Exporte os dados de acesso do seu sistema (CSV, planilha, query SQL)
-2. Mapeie as colunas para o formato `control, metric, value, unit, cycle_id, cycle_date, source`
-3. Importe no dashboard — o motor de risco avalia automaticamente
-
-### Usar os scripts de exemplo
-```bash
-# SAP GRC
-python scripts/sap_to_metrics.py \
-  --ara   samples/sap/sap_ara_violations.csv \
-  --suim  samples/sap/sap_suim_users.csv \
-  --eam   samples/sap/sap_eam_firefighter.csv \
-  --cycle 2026-Q1 --date 2026-03-31 --out metrics.csv
-
-# Salesforce
-python scripts/salesforce_to_metrics.py \
-  --users  samples/salesforce/sf_users_profiles.csv \
-  --audit  samples/salesforce/sf_audit_trail.csv \
-  --cycle  2026-Q1 --date 2026-03-31 --out metrics.csv
-
-# TOTVS Protheus
-python scripts/totvs_to_metrics.py \
-  --users     samples/totvs/totvs_sys_usr.csv \
-  --conflicts samples/totvs/totvs_sod_conflicts.csv \
-  --cycle     2026-Q1 --date 2026-03-31 --out metrics.csv
-```
-
----
-
-## Cadeia de evidência
-
-O modelo fecha a cadeia de evidência de ponta a ponta:
-
-```
-Extração (qualquer sistema)
-        ↓ hash SHA-1 registrado no manifesto
-Importação no dashboard
-        ↓ motor de risco avalia por controle ISO
-Decisão sugerida (REMEDIATE · ESCALATE · MITIGATE · ACCEPT)
-        ↓ analista confirma com justificativa
-Persistência em cycle.risk_decisions
-        ↓ incluída em qualquer export subsequente
-JSON snapshot · CSV métricas · JSON decisões · HTML relatório auditor
-```
-
-Cada export carrega o manifesto de importação (com hash), os scores por controle e as decisões confirmadas. O documento resultante é autossuficiente para fins de auditoria.
 
 ---
 
@@ -198,20 +131,18 @@ Cada export carrega o manifesto de importação (com hash), os scores por contro
 
 | Repositório | Camada | Foco |
 |---|---|---|
-| [iso27001-iam-governance](https://github.com/gilbertocrv/iso27001-iam-governance) | Governança | Políticas, padrões e controles ISO — *o que deve existir* |
-| [iam-risk-engineering-toolkit](https://github.com/gilbertocrv/iam-risk-engineering-toolkit) | Engenharia | RBAC · PAM · SoD — *como estruturar* |
+| [iso27001-iam-governance](https://github.com/gilbertocrv/iso27001-iam-governance) | Governança | Políticas e controles ISO — *o que deve existir* |
+| [iam-risk-engineering-toolkit](https://github.com/gilbertocrv/iam-risk-engineering-toolkit) | Engenharia | Estrutura, criticidade e risco — *como organizar* |
 | [iam-operational-cycle-toolkit](https://github.com/gilbertocrv/iam-operational-cycle-toolkit) | Operação | Ciclo de revisão — *como evidenciar* |
-| **iam-governance-dashboard** | **Métricas** | **Scores e decisão — *como mensurar*** |
+| **iam-control-effectiveness-model** | **Métricas** | **Mensuração de efetividade — *como medir*** |
 
 ---
 
 ## Premissas
 
-- Processamento 100% local — browser (dashboard) e Python stdlib (scripts, sem dependências externas)
-- Nenhum dado enviado a servidores externos além do repositório GitHub
-- Todo o conteúdo é educacional, baseado em normas públicas
-
----
+- Processamento 100% local — navegador (camada de visualização) e Python stdlib (exemplos de conversão)
+- Nenhum dado enviado a servidores externos
+- Conteúdo educacional baseado em normas públicas
 
 *Não substitui consultoria técnica ou jurídica especializada.*
 
