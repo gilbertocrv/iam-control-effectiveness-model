@@ -163,6 +163,29 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
 .manifest-table tr:hover td{background:#fafbfc;}
 .hash{color:var(--purple);font-size:10px;}
 
+
+/* KPI / KRI PANEL */
+.indicator-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:20px;}
+.ind-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:20px;}
+.ind-card.kpi{border-top:3px solid var(--green);}
+.ind-card.kri{border-top:3px solid var(--red);}
+.ind-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.ind-title{font-size:11px;font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;}
+.ind-title.kpi{color:var(--green);}
+.ind-title.kri{color:var(--red);}
+.ind-list{display:flex;flex-direction:column;gap:8px;}
+.ind-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;font-family:var(--mono);}
+.ind-row:last-child{border-bottom:none;}
+.ind-name{color:var(--gray);}
+.ind-val{color:var(--text);font-weight:600;text-align:right;}
+.ind-state{display:inline-block;font-size:9px;font-family:var(--mono);padding:2px 6px;border-radius:3px;border:1px solid;}
+.state-good{color:var(--green);border-color:rgba(26,122,74,.25);background:var(--green-light);}
+.state-warn{color:var(--amber);border-color:rgba(160,100,0,.25);background:var(--amber-light);}
+.state-bad{color:var(--red);border-color:rgba(192,57,43,.25);background:var(--red-light);}
+
+/* FAIR CONNECTOR */
+.fair-panel{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:22px;margin-bottom:20px}.fair-panel.off{display:none}.fair-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:14px}.fair-card{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px}.fair-label{font-size:9px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}.fair-val{font-size:18px;font-family:var(--mono);font-weight:700;color:var(--navy);line-height:1.2}.fair-sub{font-size:10px;color:var(--gray);margin-top:4px;font-family:var(--mono)}.fair-note-box{margin-top:14px;padding:12px 14px;border-radius:6px;background:#fafbfc;border:1px solid var(--border);font-size:11px;color:var(--gray)}.fair-link{font-family:var(--mono);font-size:10px;color:var(--navy-light);text-decoration:none}.fair-link:hover{text-decoration:underline}
+
 /* EXPORT */
 .export-section{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:22px;}
 .export-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
@@ -191,7 +214,7 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
 <header>
   <div class="header-left">
     <h1>IAM_CONTROL_EFFECTIVENESS_MODEL</h1>
-    <div class="sub">ISO/IEC 27001:2022 + LGPD · modelo de mensuração v2.0 · gilbertocrv</div>
+    <div class="sub">ISO/IEC 27001:2022 + LGPD · KPI/KRI + FAIR · modelo de mensuração v3.0 · gilbertocrv</div>
   </div>
   <div class="header-actions">
     <button class="btn" onclick="toggleImport()">⊕ Ingestão de evidência</button>
@@ -262,6 +285,27 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
     <div class="section-label">Visão executiva do ciclo</div>
     <div class="overview-grid" id="overviewGrid"></div>
 
+  <div class="indicator-grid" id="indicatorGrid">
+    <div class="ind-card kpi">
+      <div class="ind-head">
+        <div class="ind-title kpi">KPI · Performance</div>
+        <span class="badge b-baixo">processo</span>
+      </div>
+      <div class="ind-list" id="kpiList">
+        <div class="ind-row"><span class="ind-name">Aguardando dados</span><span class="ind-val">—</span></div>
+      </div>
+    </div>
+    <div class="ind-card kri">
+      <div class="ind-head">
+        <div class="ind-title kri">KRI · Risk Exposure</div>
+        <span class="badge b-critical">risco</span>
+      </div>
+      <div class="ind-list" id="kriList">
+        <div class="ind-row"><span class="ind-name">Aguardando dados</span><span class="ind-val">—</span></div>
+      </div>
+    </div>
+  </div>
+
     <div class="section-label">Score de efetividade por controle ISO</div>
     <div class="score-grid">
       <div class="score-card" id="scoreMaster"></div>
@@ -302,6 +346,17 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
       </div>
       <div id="findingsContainer"></div>
     </div>
+
+
+<div class="section-label">Camada opcional — impacto financeiro conectado</div>
+<div class="fair-panel off" id="fairPanel">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+    <span style="font-size:11px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;">Conector FAIR-inspired sobre as métricas já ingeridas</span>
+    <a class="fair-link" href="../docs/fair-financial-impact.md" target="_blank" rel="noopener">docs/fair-financial-impact.md</a>
+  </div>
+  <div class="fair-grid" id="fairGrid"></div>
+  <div class="fair-note-box" id="fairNote"></div>
+</div>
 
     <div class="section-label">Manifesto de ingestão — rastreabilidade</div>
     <div class="manifest-card">
@@ -607,6 +662,113 @@ function clearData(){
   log("dados limpos pelo usuário","warn");
 }
 
+
+function fmtBRL(v){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(Number(v||0));}
+function computeFairSummary(c){
+  const sod=c?.controls?.sod||{};
+  const critical=Number(sod.conflicts_critical||0);
+  const untreated=Number(sod.untreated_pct||0);
+  if(!critical)return {connector_status:'NOT_APPLICABLE',source_metric:'5.3'};
+  const magnitude=80000;
+  const monthsBetweenEvents=(Number(sod.avg_resolution_days||0)>30)?18:24;
+  const controlCost=20000;
+  const reductionPct=90;
+  const activeConflicts=critical*(untreated/100);
+  const frequency=activeConflicts*(12/monthsBetweenEvents);
+  const annualExposure=frequency*magnitude;
+  const residualExposure=annualExposure*(1-reductionPct/100);
+  const reductionValue=annualExposure-residualExposure;
+  const roi=((reductionValue-controlCost)/controlCost)*100;
+  let decision='MONITORAR';
+  if(annualExposure>100000) decision='TRATAR COM PRIORIDADE';
+  else if(annualExposure>30000) decision='TRATAR';
+  return {
+    connector_status:'CONNECTED',
+    source_metric:'5.3',
+    active_conflicts_est:Math.round(activeConflicts*100)/100,
+    loss_event_frequency_annual:Math.round(frequency*100)/100,
+    loss_magnitude:magnitude,
+    annual_exposure:Math.round(annualExposure),
+    residual_exposure:Math.round(residualExposure),
+    risk_reduction_value:Math.round(reductionValue),
+    control_cost:controlCost,
+    control_roi_pct:Math.round(roi),
+    decision_hint:decision,
+    untreated_pct:untreated,
+    conflicts_critical:critical,
+    months_between_events:monthsBetweenEvents,
+  };
+}
+function fmtPct(val){
+  if(val===undefined||val===null||val==='')return '—';
+  return Number(val).toFixed(1)+'%';
+}
+function fmtNum(val){
+  if(val===undefined||val===null||val==='')return '—';
+  return Number(val).toLocaleString('pt-BR');
+}
+function indicatorState(key, value){
+  if(value===undefined||value===null) return '';
+  const v=Number(value);
+  const rules={
+    reviews_completed_pct:  (x)=>x>=90?'good':x>=75?'warn':'bad',
+    avg_resolution_days:    (x)=>x<=15?'good':x<=30?'warn':'bad',
+    decisions_with_evidence_pct:(x)=>x>=90?'good':x>=75?'warn':'bad',
+    exceptions_documented_pct:  (x)=>x>=90?'good':x>=75?'warn':'bad',
+    conflicts_critical:     (x)=>x===0?'good':x<=5?'warn':'bad',
+    untreated_pct:          (x)=>x<=10?'good':x<=30?'warn':'bad',
+    mfa_coverage_pct:       (x)=>x>=95?'good':x>=85?'warn':'bad',
+    inactive_accounts_pct:  (x)=>x<=5?'good':x<=10?'warn':'bad',
+  };
+  const fn=rules[key];
+  return fn?'state-'+fn(v):'';
+}
+function renderIndicators(cycle){
+  const kpiList=document.getElementById('kpiList');
+  const kriList=document.getElementById('kriList');
+  if(!kpiList||!kriList)return;
+  const controls=(cycle&&cycle.controls)?cycle.controls:{};
+  const review=controls.review||{};
+  const evidence=controls.evidence||{};
+  const sod=controls.sod||{};
+  const pam=controls.pam||{};
+  const kpis=[
+    ['reviews_completed_pct','Reviews concluídas',review.reviews_completed_pct,'percent'],
+    ['avg_resolution_days','Tempo médio de resolução',sod.avg_resolution_days,'days'],
+    ['decisions_with_evidence_pct','Decisões com evidência',evidence.decisions_with_evidence_pct,'percent'],
+    ['exceptions_documented_pct','Exceções documentadas',evidence.exceptions_documented_pct,'percent']
+  ].filter(r=>r[2]!==undefined&&r[2]!==null);
+  const kris=[
+    ['conflicts_critical','Conflitos críticos',sod.conflicts_critical,'count'],
+    ['untreated_pct','Conflitos não tratados',sod.untreated_pct,'percent'],
+    ['mfa_coverage_pct','Cobertura MFA',pam.mfa_coverage_pct,'percent'],
+    ['inactive_accounts_pct','Contas inativas',pam.inactive_accounts_pct,'percent']
+  ].filter(r=>r[2]!==undefined&&r[2]!==null);
+  kpiList.innerHTML=kpis.length?kpis.map(([key,label,val,unit])=>{
+    const fmt=unit==='percent'?fmtPct(val):unit==='days'?fmtNum(val)+' d':fmtNum(val);
+    return `<div class="ind-row"><span class="ind-name">${label}</span><span class="ind-val"><span class="ind-state ${indicatorState(key,val)}">${fmt}</span></span></div>`;
+  }).join(''):'<div class="ind-row"><span class="ind-name">Sem KPI disponível</span><span class="ind-val">—</span></div>';
+  kriList.innerHTML=kris.length?kris.map(([key,label,val,unit])=>{
+    const fmt=unit==='percent'?fmtPct(val):unit==='count'?String(Number(val)):fmtNum(val);
+    return `<div class="ind-row"><span class="ind-name">${label}</span><span class="ind-val"><span class="ind-state ${indicatorState(key,val)}">${fmt}</span></span></div>`;
+  }).join(''):'<div class="ind-row"><span class="ind-name">Sem KRI disponível</span><span class="ind-val">—</span></div>';
+}
+function renderFair(c){
+  const fair=computeFairSummary(c);
+  c.fair_summary=fair;
+  const panel=document.getElementById('fairPanel');
+  if(!fair||fair.connector_status!=='CONNECTED'){panel.classList.add('off');return;}
+  panel.classList.remove('off');
+  document.getElementById('fairGrid').innerHTML=`
+    <div class="fair-card"><div class="fair-label">Métrica reaproveitada</div><div class="fair-val">${fair.conflicts_critical}</div><div class="fair-sub">conflitos críticos · ${fair.untreated_pct}% sem tratamento</div></div>
+    <div class="fair-card"><div class="fair-label">Frequência estimada</div><div class="fair-val">${fair.loss_event_frequency_annual}</div><div class="fair-sub">eventos/ano · base ${fair.months_between_events} meses</div></div>
+    <div class="fair-card"><div class="fair-label">Magnitude por evento</div><div class="fair-val">${fmtBRL(fair.loss_magnitude)}</div><div class="fair-sub">premissa conservadora</div></div>
+    <div class="fair-card"><div class="fair-label">Exposição anual</div><div class="fair-val">${fmtBRL(fair.annual_exposure)}</div><div class="fair-sub">estimada a partir do dado já ingerido</div></div>
+    <div class="fair-card"><div class="fair-label">Exposição residual</div><div class="fair-val">${fmtBRL(fair.residual_exposure)}</div><div class="fair-sub">após redução estimada de 90%</div></div>
+    <div class="fair-card"><div class="fair-label">ROI do tratamento</div><div class="fair-val">${fair.control_roi_pct}%</div><div class="fair-sub">custo de controle: ${fmtBRL(fair.control_cost)}</div></div>`;
+  document.getElementById('fairNote').innerHTML=`<strong>Leitura executiva:</strong> os mesmos dados operacionais de SoD agora estimam <strong>${fmtBRL(fair.annual_exposure)}/ano</strong> de exposição financeira. Sinal sugerido: <strong>${fair.decision_hint}</strong>.`;
+}
+
 // ═══ RENDER ═══
 function renderAll(){
   document.getElementById("emptyState").style.display="none";
@@ -622,7 +784,7 @@ function renderCycle(){
   curIdx=parseInt(document.getElementById("cycleSelect").value)||curIdx;
   const c=cycles[curIdx];if(!c)return;
   document.getElementById("cycleMeta").textContent=`${c.cycle_date||""} · fonte: ${c.source_file||"—"}`;
-  renderOverview(c);renderScore(c);renderControls(c);renderRisk(c);renderTrend();
+  renderOverview(c);renderScore(c);renderControls(c);renderIndicators(c);renderRisk(c);renderFair(c);renderTrend();
 }
 function renderOverview(c){
   const s=c.summary||{};
@@ -875,7 +1037,7 @@ function exportSnapshot(){
   const confirmed=c.risk_decisions?.confirmed_count||0;
   const total=c.risk_decisions?.total_count||0;
   dl(`iam-snapshot-${c.cycle_id}-${Date.now()}.json`,
-    JSON.stringify({...c,_meta:{exported_at:new Date().toISOString(),version:EV,
+    JSON.stringify({...c,fair_summary:c.fair_summary||computeFairSummary(c),_meta:{exported_at:new Date().toISOString(),version:EV,
       risk_decisions_status:`${confirmed}/${total} confirmadas`}},null,2),
     "application/json");
   log(`export snapshot: ${c.cycle_id} · ${confirmed}/${total} decisões persistidas`,"ok");
@@ -899,7 +1061,7 @@ function exportHistory(){
   dl(`iam-history-${Date.now()}.json`,JSON.stringify({
     _meta:{exported_at:new Date().toISOString(),cycles_count:cycles.length,version:EV,
       note:"risk_decisions field in each cycle contains confirmed analyst decisions"},
-    manifest,cycles},null,2),"application/json");
+    manifest,cycles:cycles.map(c=>({...c,fair_summary:c.fair_summary||computeFairSummary(c)}))},null,2),"application/json");
   log(`export histórico: ${cycles.length} ciclo(s) · decisões de risco incluídas`,"ok");
 }
 function exportManifest(){
@@ -917,7 +1079,8 @@ function exportRiskCSV(){
 }
 function exportRiskJSON(){
   if(!findings.length)return;
-  dl(`iam-risk-${findings[0]?.cycle_id}-${Date.now()}.json`,JSON.stringify({_meta:{schema:"iam-risk-decision/1.0",generated_at:new Date().toISOString(),model_version:EV,normative_refs:["ISO/IEC 27001:2022","LGPD Lei 13.709/2018"]},summary:riskSum,manifest_ref:manifest.slice(-5),findings},null,2),"application/json");
+  const c=cycles[curIdx];
+  dl(`iam-risk-${findings[0]?.cycle_id}-${Date.now()}.json`,JSON.stringify({_meta:{schema:"iam-risk-decision/1.0",generated_at:new Date().toISOString(),model_version:EV,normative_refs:["ISO/IEC 27001:2022","LGPD Lei 13.709/2018"]},summary:riskSum,fair_summary:c?.fair_summary||computeFairSummary(c),manifest_ref:manifest.slice(-5),findings},null,2),"application/json");
   log(`export JSON decisões: ${findings.length} achados`,"ok");
 }
 function exportAuditReport(){
@@ -973,6 +1136,15 @@ ${riskSum?`<tr><td>LGPD triggers</td><td>${riskSum.lgpd_triggers} · ${riskSum.u
 <tr><td>5.18</td><td>Governança — Review</td><td class="b">${ctrl.review?.score||"—"} / 10</td><td>${badgeLbl(ctrl.review?.score||0)}</td></tr>
 <tr><td>5.33</td><td>Auditabilidade</td><td class="b">${ctrl.evidence?.score||"—"} / 10</td><td>${badgeLbl(ctrl.evidence?.score||0)}</td></tr>
 </table>
+${(c.fair_summary||computeFairSummary(c)).connector_status==='CONNECTED'?`<h2>Camada opcional — impacto financeiro conectado</h2>
+<table><tr><th>Métrica</th><th>Valor</th></tr>
+<tr><td>Conflitos críticos reaproveitados</td><td>${(c.fair_summary||computeFairSummary(c)).conflicts_critical} · ${(c.fair_summary||computeFairSummary(c)).untreated_pct}% sem tratamento</td></tr>
+<tr><td>Frequência estimada</td><td>${(c.fair_summary||computeFairSummary(c)).loss_event_frequency_annual} eventos/ano</td></tr>
+<tr><td>Magnitude por evento</td><td>${fmtBRL((c.fair_summary||computeFairSummary(c)).loss_magnitude)}</td></tr>
+<tr><td>Exposição anual</td><td><strong>${fmtBRL((c.fair_summary||computeFairSummary(c)).annual_exposure)}</strong></td></tr>
+<tr><td>Exposição residual</td><td>${fmtBRL((c.fair_summary||computeFairSummary(c)).residual_exposure)}</td></tr>
+<tr><td>Valor da redução de risco</td><td>${fmtBRL((c.fair_summary||computeFairSummary(c)).risk_reduction_value)} · ROI ${(c.fair_summary||computeFairSummary(c)).control_roi_pct}%</td></tr>
+</table>`:""}
 <h2>Avaliação de Risco — ISO 27001:2022 + LGPD Lei 13.709/2018</h2>
 <p style="font-size:11px;color:#666;margin-bottom:10px;">Decisões sugeridas pelo motor de risco e confirmadas pelo analista. Persistidas em <code>cycle.risk_decisions</code> no JSON do ciclo.</p>
 <table><tr><th>Controle</th><th>Métrica</th><th>Valor</th><th>Risco</th><th>Decisão</th><th>Prioridade</th><th>Art. LGPD</th><th>Risco Reg.</th><th>Status</th><th>Confirmado em</th><th>Nota analista</th></tr>
