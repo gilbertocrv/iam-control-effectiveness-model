@@ -266,9 +266,48 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
   </div>
 
   <!-- EMPTY STATE -->
-  <div class="empty-state" id="emptyState">
-    <div class="empty-title">// SEM EVIDÊNCIA CARREGADA</div>
-    <div class="empty-sub">Ingira evidência via JSON ou CSV para iniciar a mensuração.<br>Use "Carregar evidências de exemplo" para explorar o dashboard com dados fictícios.</div>
+  <div id="emptyState">
+    <div style="margin-bottom:16px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;">Status do modelo — aguardando evidência</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px;">
+        <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid var(--gray);border-radius:6px;padding:18px;">
+          <div style="font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">RBAC · 5.15 / 8.3</div>
+          <div style="font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--gray);">—</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:6px;font-family:'IBM Plex Mono',monospace;">Estrutura de acesso</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid var(--gray);border-radius:6px;padding:18px;">
+          <div style="font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">PAM · 8.2</div>
+          <div style="font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--gray);">—</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:6px;font-family:'IBM Plex Mono',monospace;">Contas privilegiadas</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid var(--gray);border-radius:6px;padding:18px;">
+          <div style="font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">SoD · 5.3</div>
+          <div style="font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--gray);">—</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:6px;font-family:'IBM Plex Mono',monospace;">Conflitos de função</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid var(--gray);border-radius:6px;padding:18px;">
+          <div style="font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Review · 5.18</div>
+          <div style="font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--gray);">—</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:6px;font-family:'IBM Plex Mono',monospace;">Ciclo de revisão</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid var(--gray);border-radius:6px;padding:18px;">
+          <div style="font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Evidence · 5.33</div>
+          <div style="font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--gray);">—</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:6px;font-family:'IBM Plex Mono',monospace;">Auditabilidade</div>
+        </div>
+        <div style="background:var(--navy);border:1px solid var(--navy);border-top:3px solid var(--accent);border-radius:6px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div style="font-size:9px;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Score geral</div>
+          <div style="font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,.3);">— / 10</div>
+          <div style="margin-top:12px;">
+            <button class="btn btn-primary" style="width:100%;text-align:center;" onclick="loadSample()">▶ Carregar exemplo</button>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:16px 20px;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--gray);display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <span style="color:var(--accent);font-weight:600;">↑</span>
+        <span>Expanda <strong style="color:var(--text);">Ingestão de evidência</strong> acima para carregar um ciclo JSON ou CSV — ou use <strong style="color:var(--text);">Carregar exemplo</strong> para explorar o modelo com dados fictícios.</span>
+      </div>
+    </div>
   </div>
 
   <!-- DASHBOARD CONTENT -->
@@ -337,9 +376,9 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
       <div class="filter-bar" id="filterBar">
         <span class="filter-label">Filtrar achados:</span>
         <button class="import-tab active" id="f-ALL"       onclick="filterRisk('ALL')">Todos</button>
-        <button class="import-tab"        id="f-REMEDIATE" onclick="filterRisk('REMEDIATE')">Remediate</button>
-        <button class="import-tab"        id="f-ESCALATE"  onclick="filterRisk('ESCALATE')">Escalate</button>
-        <button class="import-tab"        id="f-MITIGATE"  onclick="filterRisk('MITIGATE')">Mitigate</button>
+        <button class="import-tab"        id="f-REMEDIATE" onclick="filterRisk('REMEDIATE')">Remediação</button>
+        <button class="import-tab"        id="f-ESCALATE"  onclick="filterRisk('ESCALATE')">Escalação</button>
+        <button class="import-tab"        id="f-MITIGATE"  onclick="filterRisk('MITIGATE')">Mitigação</button>
         <button class="import-tab"        id="f-LGPD"      onclick="filterRisk('LGPD')">LGPD trigger</button>
         <button class="import-tab"        id="f-CONFIRMED" onclick="filterRisk('CONFIRMED')">Confirmados</button>
         <button class="import-tab"        id="f-PENDING"   onclick="filterRisk('PENDING')">Pendentes</button>
@@ -348,14 +387,16 @@ main{max-width:1100px;margin:0 auto;padding:32px 30px 70px;}
     </div>
 
 
-<div class="section-label">Camada opcional — impacto financeiro conectado</div>
-<div class="fair-panel off" id="fairPanel">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
-    <span style="font-size:11px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;">Conector FAIR-inspired sobre as métricas já ingeridas</span>
-    <a class="fair-link" href="../docs/fair-financial-impact.md" target="_blank" rel="noopener">docs/fair-financial-impact.md</a>
+<div id="fairSection" style="display:none;">
+  <div class="section-label">Camada opcional — impacto financeiro conectado</div>
+  <div class="fair-panel" id="fairPanel">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span style="font-size:11px;font-family:var(--mono);color:var(--gray);text-transform:uppercase;letter-spacing:2px;">Conector FAIR-inspired sobre as métricas já ingeridas</span>
+      <a class="fair-link" href="../docs/fair-financial-impact.md" target="_blank" rel="noopener">docs/fair-financial-impact.md</a>
+    </div>
+    <div class="fair-grid" id="fairGrid"></div>
+    <div class="fair-note-box" id="fairNote"></div>
   </div>
-  <div class="fair-grid" id="fairGrid"></div>
-  <div class="fair-note-box" id="fairNote"></div>
 </div>
 
     <div class="section-label">Manifesto de ingestão — rastreabilidade</div>
@@ -756,9 +797,9 @@ function renderIndicators(cycle){
 function renderFair(c){
   const fair=computeFairSummary(c);
   c.fair_summary=fair;
-  const panel=document.getElementById('fairPanel');
-  if(!fair||fair.connector_status!=='CONNECTED'){panel.classList.add('off');return;}
-  panel.classList.remove('off');
+  const section=document.getElementById('fairSection');
+  if(!fair||fair.connector_status!=='CONNECTED'){section.style.display='none';return;}
+  section.style.display='block';
   document.getElementById('fairGrid').innerHTML=`
     <div class="fair-card"><div class="fair-label">Métrica reaproveitada</div><div class="fair-val">${fair.conflicts_critical}</div><div class="fair-sub">conflitos críticos · ${fair.untreated_pct}% sem tratamento</div></div>
     <div class="fair-card"><div class="fair-label">Frequência estimada</div><div class="fair-val">${fair.loss_event_frequency_annual}</div><div class="fair-sub">eventos/ano · base ${fair.months_between_events} meses</div></div>
